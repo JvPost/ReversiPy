@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html lang = "en">
+<head>
+<!-- basic.html -->
+<title>ReversiPy</title>
+<meta charset = "UTF-8" />
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/game.css') }}">
+
+</head>
+<body>
+<h2>ReversiPy</h2>
+<div id="spa">
+    <!-- <div id="reversi-board-container">
+            
+        <div id="row-info">
+            {% for i in range(1, 9) %}
+                <div class="row-info-cell"> <span> {{i}}</span> </div>
+            {% endfor %}
+        </div>
+    
+        <div id="reversi-board">
+            {% for i in range(0,8) %}
+                {% for j in ["A", "B", "C", "D", "E", "F", "G", "H"] %}
+                    <div data-row="{{i}}" data-col="{{j}}" data-played="0" class="reversi-field"></div>
+                {% endfor %}                
+            {% endfor %}
+        </div>
+    
+        <div id="col-info">       
+            {% for i in ["A", "B", "C", "D", "E", "F", "G", "H"] %}
+                <div class="col-info-cell"> {{i}} </div>    
+            {% endfor %}
+        </div>
+    </div> -->
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- SPA -->
+<script src="{{ url_for('static', filename='js/spa.js') }}"></script>
+<!-- Aditional modules -->
+<script src="{{ url_for('static', filename='js/gameModule.js') }}"></script>
+<script src="{{ url_for('static', filename='js/responseModule.js') }}"></script>
+
+<script>
+    $(function(){
+        SPA.init("spa");
+    });
+</script>
+
+</body>
+</html>

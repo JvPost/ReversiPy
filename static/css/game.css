@@ -1,0 +1,45 @@
+div{
+    box-sizing: border-box;
+}
+
+#reversi-board{
+    width: 432px;
+    height: 432px;
+    background-color: white;
+    float: left;
+}
+
+.reversi-field{
+    width: 12.5%;
+    height: 12.5%;
+    border: 2px solid white;
+    background-color: #00bb00;
+    float: left;
+}
+.reversi-field:hover{
+    border-color: black;
+}
+
+#col-info{
+    width: 432px;
+    height: 20px;
+}
+.col-info-cell{
+    text-align: center;
+    height: 100%;
+    width: 12.5%;
+    float: left;
+}
+
+#row-info{
+    float: left;
+    height: 432px;
+}
+.row-info-cell{
+    height: 12.5%;
+}
+.row-info-cell span{
+    position: relative;
+    top: 50%;
+}
+
