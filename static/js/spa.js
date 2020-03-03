@@ -16,11 +16,10 @@ const SPA = (($) => {
 
     let makeMove = (col, row) => {
         return new Promise((resolve, reject) => {
-            var moveResponse = SPA.responseModule.move(col, row);
-
+            var moveResponse = SPA.responseModule.move(0, col, row);
             Promise.all([moveResponse])
             .then(() => {
-                console.log('move went through')
+                SPA.gameModule.updateGrid(row, col); // TODO Doesn't run after succes, no succes response coming back in
             })
             .catch(() => {
                 alert('something went wrong.');

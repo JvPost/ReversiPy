@@ -4,16 +4,15 @@ SPA.gameModule = (($) => {
 
     init = ($container) => {
         _$container = $container
-        
         _grid = {
-            "A" : _zeroGrid(),
-            "B" : _zeroGrid(),
-            "C" : _zeroGrid(),
-            "D" : _zeroGrid(),
-            "E" : _zeroGrid(),
-            "F" : _zeroGrid(),
-            "G" : _zeroGrid(),
-            "H" : _zeroGrid(),
+            "A" : [],
+            "B" : [],
+            "C" : [],
+            "D" : [],
+            "E" : [],
+            "F" : [],
+            "G" : [],
+            "H" : [],
         }
         
         _$rowInfo = $('<div id="row-info">');
@@ -27,7 +26,8 @@ SPA.gameModule = (($) => {
             // loop cols to make fields
             for (const key in _grid) {
                 if (_grid.hasOwnProperty(key)) {
-                    let $field = $('<div data-row="'+ row +'" data-col="'+ key +'" data-played="0" class="reversi-field"></div>')
+                    let $field = $('<div data-row="'+ row +'" data-col="'+ key +'" data-played="0" class="reversi-field"></div>');
+                    _grid[key].push($field);
                     $(_$board).append($field);
                 }
             }
@@ -46,7 +46,12 @@ SPA.gameModule = (($) => {
     }
     
     updateGrid = (row, col) => {
+        console.log(row, col)
+        _grid[col][row].append(fiche())
+    }
 
+    let fiche = () => {
+        return $('<div class="fiche"></div>');
     }
 
     let _zeroGrid = () => {

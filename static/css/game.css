@@ -15,9 +15,27 @@ div{
     border: 2px solid white;
     background-color: #00bb00;
     float: left;
+    position: relative;
 }
 .reversi-field:hover{
     border-color: black;
+}
+.reversi-field .fiche{
+    width: 90%;
+    height: 90%;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px solid black;
+}
+
+.fiche [data-played="-1"]{
+    background-color:black;
+}
+.fiche [data-played="1"]{
+    background-color: white;
 }
 
 #col-info{
