@@ -1,6 +1,6 @@
 SPA.gameModule = (($) => {
     let init, updateGrid;
-    let _$container, _grid, _$board, _$rowInfo, _$colInfo
+    let _$container, _grid, _$board, _$rowInfo, _$colInfo, _playerColor
 
     init = ($container) => {
         _$container = $container
@@ -18,6 +18,7 @@ SPA.gameModule = (($) => {
         _$rowInfo = $('<div id="row-info">');
         _$colInfo = $('<div id="col-info">');
         _$board = $('<div id="reversi-board">');
+        _playerColor = 1 // TODO make either 1 for white and -1 for black
 
         // loop rows
         for(let i = 0; i < 8; i++){
@@ -46,8 +47,9 @@ SPA.gameModule = (($) => {
     }
     
     updateGrid = (row, col) => {
-        console.log(row, col)
-        _grid[col][row].append(fiche())
+        field = _grid[col][row - 1];
+        $(field).attr("data-played", _playerColor);
+        field.append(fiche());
     }
 
     let fiche = () => {

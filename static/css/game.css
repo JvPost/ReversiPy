@@ -31,10 +31,10 @@ div{
     border: 2px solid black;
 }
 
-.fiche [data-played="-1"]{
+.reversi-field[data-played="-1"] .fiche{
     background-color:black;
 }
-.fiche [data-played="1"]{
+.reversi-field[data-played="1"] .fiche{
     background-color: white;
 }
 

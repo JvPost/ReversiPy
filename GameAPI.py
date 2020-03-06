@@ -11,8 +11,8 @@ games = {
     '0': Game(0, 'white', 'black') # TODO: fix
 }
 
-@app.route('/api/Spel/Token', methods = ['GET'])
-def token():
+@app.route('/api/Spel/<token>', methods = ['GET'])
+def getGameInfo(token):
     response = Response()
     if request.method == 'GET':
         #	Omschrijving
@@ -20,14 +20,13 @@ def token():
         #	bord en elk vakje de bezetting (geen fiche, zwart fische, wit fische)
         #	Wie aan de beurt is
         #	Status van het spel (bijv. De winnaar, opgeven door)
-        
         response.status_code = 200
+        return games[token].grid
     else:
         response.status_code = 400
-    return response
 
 @app.route('/api/Spel/Beurt/<token>', methods = ['GET'])
-def beurt():
+def beurt(token):
     response = Response()
     if request.method == 'GET':
         #logic
@@ -40,20 +39,19 @@ def beurt():
 @app.route('/api/Spel/Zet', methods = ['PUT'])
 def move():
     response = Response()
-    response.status_code = 400;
+    response.status_code = 400
     if request.method == 'PUT':
         #   Stuurt het veld naar de server waar een fiche wordt geplaatst.
         #   Het token van het spel en speler moeten meegegeven worden.
         #   Ook passen moet mogelijk zijn.
-        reqDataBytes = request.get_data()
-        reqDataString = reqDataBytes.decode('utf8').replace("'", '"')
-        reqJson = json.loads(reqDataString)
-
-        if (games['0'] is not None): #check if exists TODO fix
-            game = games['0']
-            print(game.grid)
+        reqDict = RequestDataDict(request.get_data())
+        try:
+            if (reqDict['moveType'] == 0): # placing stone
+                game = games['0'] # TODO add token
+                game.update(0, reqDict['row'], reqDict['col'])
             response.status_code = 200
-
+        except Exception: # TODO make specific
+            response.status_code = 401 # TODO illegal move status_code maybe? idk yet
     return response
 
 @app.route('/api/Spel/Opgeven', methods = ['PUT'])
@@ -65,6 +63,11 @@ def giveUp():
     else:
         response.status_code = 400
     return response
+
+def RequestDataDict(requestData):
+    reqDataBytes = request.get_data()
+    reqDataString = reqDataBytes.decode('utf8').replace("'", '"')
+    return  json.loads(reqDataString)
 
 if __name__ == "__main__":
     app.run(

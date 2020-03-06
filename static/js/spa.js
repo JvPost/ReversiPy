@@ -12,17 +12,37 @@ const SPA = (($) => {
             let data = $(ev.target).data();
             makeMove(data['col'], data['row']);
         });
+
+        // test btn
+        let btn = $('<input type="button" value="log data from test game" >');
+        $(btn).on('click', function(){
+            getGameInfo(0);
+        });
+        $($spa).append(btn);
     }
 
     let makeMove = (col, row) => {
         return new Promise((resolve, reject) => {
-            var moveResponse = SPA.responseModule.move(0, col, row);
+            let moveResponse = SPA.responseModule.move(0, col, row);
             Promise.all([moveResponse])
             .then(() => {
                 SPA.gameModule.updateGrid(row, col); // TODO Doesn't run after succes, no succes response coming back in
             })
             .catch(() => {
                 alert('something went wrong.');
+            });
+        });
+    }
+
+    let getGameInfo = (token) => {
+        return new Promise((resolve, reject) => {
+            let gameInfoPromise = SPA.responseModule.getGameInfo(token);
+            Promise.all([gameInfoPromise])
+            .then((gameInfo) => {
+                console.log(gameInfo)
+            })
+            .catch(() => {
+                alert('something went wrong')
             });
         });
     }
