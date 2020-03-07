@@ -26,7 +26,8 @@ const SPA = (($) => {
             let moveResponse = SPA.responseModule.move(0, col, row);
             Promise.all([moveResponse])
             .then(() => {
-                SPA.gameModule.updateGrid(row, col); // TODO Doesn't run after succes, no succes response coming back in
+                SPA.gameModule.updateGrid(row, col);
+                
             })
             .catch(() => {
                 alert('something went wrong.');
