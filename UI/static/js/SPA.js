@@ -2,34 +2,40 @@ const SPA = (($) => {
     "use strict"
 
     let init;
-    let _$spa, _$container
+    let _$spa, _$container, _token // todo set token
 
-    init = (spaID) => {
-        _$spa = $("#" + spaID); 
+    init = (spa) => {
+        _$spa = $(spa); 
         _$container = $('<div id="reversi-board-container">')
         _$spa.append(_$container)
-        gameModule.init(_$container);
+        GameModule.init(_$container);
 
+        // move event handlers
         const fields = $(_$container).find('.reversi-field');
         $(fields).on('click', (ev) => {
             let data = $(ev.target).data();
             makeMove(data['col'], data['row']);
         });
 
-        // test btn
+        // game info button
         let btn = $('<input type="button" value="log data from test game" >');
         $(btn).on('click', function(){
-            getGameInfo(0);
+            getGameInfo(0); // TODO add token
         });
-        $(_$spa).append(btn);
+
+        let surrenderBtn = $('<input type="button" value="Surrender"');
+        $(surrenderBtn).on('click', () => {
+
+        });
+
+        _$spa.append(btn);
     }
 
     let makeMove = (col, row) => {
         return new Promise((resolve, reject) => {
-            let moveResponse = responseModule.move(0, col, row);
-            Promise.all([moveResponse])
+            ResponseModule.move(0, col, row)
             .then(() => {
-                gameModule.updateGrid(row, col);
+                GameModule.updateGrid(row, col);
             })
             .catch(() => {
                 alert('something went wrong.');
@@ -39,15 +45,22 @@ const SPA = (($) => {
 
     let getGameInfo = (token) => {
         return new Promise((resolve, reject) => {
-            let gameInfoPromise = responseModule.getGameInfo(token);
+            let gameInfoPromise = ResponseModule.getGameInfo(token);
             Promise.all([gameInfoPromise])
             .then((gameInfo) => {
-                console.log(gameInfo)
+                console.log(gameInfo);
             })
             .catch(() => {
-                alert('something went wrong')
+                alert('something went wrong');
             });
         });
+    }
+
+    let surrender = (token) => {
+        return new Promise((resolve, reject) => {
+            let surrenderPromise = ResponseModule.surrender(token);
+            
+        })
     }
     
     return {

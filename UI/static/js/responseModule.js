@@ -1,14 +1,16 @@
-let responseModule = (($) => {
+let ResponseModule = (($) => {
     "use strict"
 
-    let move, getGameInfo;
+    let move, getGameInfo, getPlayerToken;
     let _path = "http://localhost:5001";
     
+
+
     // movetype, row, col
     move = (moveType, col, row) => {
         return new Promise((resolve, reject) => {
-            $.ajax(_path + '/api/Spel/Zet',
-            {
+            $.ajax({
+                url: _path + '/api/Spel/Zet',
                 method: 'PUT',
                 data: JSON.stringify({ 
                     moveType: moveType,
@@ -38,8 +40,15 @@ let responseModule = (($) => {
         });
     }
 
+    getPlayerToken = () => {
+        return new Promise((resolve, reject) => {
+            $.ajax(_path + '')
+        });
+    }
+
     return {
         move : move,
-        getGameInfo: getGameInfo
+        getGameInfo: getGameInfo,
+        getToken: getPlayerToken
     };
 })($);

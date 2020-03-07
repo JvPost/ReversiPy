@@ -1,4 +1,4 @@
-let gameModule = (($) => {
+let GameModule = (($) => {
     "use strict"
 
     let init, updateGrid;
@@ -49,17 +49,13 @@ let gameModule = (($) => {
     }
     
     updateGrid = (row, col) => {
-        field = _grid[col][row - 1];
+        let field = _grid[col][row - 1];
         $(field).attr("data-played", _playerColor);
         field.append(fiche());
     }
 
     let fiche = () => {
         return $('<div class="fiche"></div>');
-    }
-
-    let _zeroGrid = () => {
-        return [0,0,0,0,0,0,0,0]
     }
 
     return {

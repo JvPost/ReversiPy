@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, session
 from flask_cors import CORS
 import json 
 from GameClass import Game
@@ -7,11 +7,18 @@ app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+SESSION_TYPE = ''
+
 games = {
     '0': Game(0, 'white', 'black') # TODO: fix
 }
 
-@app.route('/api/Spel/<token>', methods = ['GET'])s
+@app.route('/api/Spel/GetToken', methods = ['GET'])
+def getToken():
+    
+    return 'token'
+
+@app.route('/api/Spel/<token>', methods = ['GET'])
 def getGameInfo(token):
     response = Response()
     if request.method == 'GET':

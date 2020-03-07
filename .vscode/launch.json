@@ -11,7 +11,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "GameAPI.py",
+                "FLASK_APP": "API/GameAPI.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "0"
             },

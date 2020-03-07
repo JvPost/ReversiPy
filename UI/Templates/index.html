@@ -14,17 +14,19 @@
     
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<!-- Aditional modules -->
-<script src="{{ url_for('static', filename='js/gameModule.js') }}"></script>
-<script src="{{ url_for('static', filename='js/responseModule.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 
 <!-- SPA -->
 <script src="{{ url_for('static', filename='js/SPA.js') }}"></script>
 
+<!-- Aditional modules -->
+<script src="{{ url_for('static', filename='js/GameModule.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ResponseModule.js') }}"></script>
+
+
 <script>
     $(function(){
-        SPA.init("spa");
+        SPA.init($("#spa"));
     });
 </script>
 
