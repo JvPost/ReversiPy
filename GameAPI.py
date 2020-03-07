@@ -11,7 +11,7 @@ games = {
     '0': Game(0, 'white', 'black') # TODO: fix
 }
 
-@app.route('/api/Spel/<token>', methods = ['GET'])
+@app.route('/api/Spel/<token>', methods = ['GET'])s
 def getGameInfo(token):
     response = Response()
     if request.method == 'GET':

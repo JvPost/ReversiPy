@@ -1,4 +1,6 @@
-SPA.gameModule = (($) => {
+let gameModule = (($) => {
+    "use strict"
+
     let init, updateGrid;
     let _$container, _grid, _$board, _$rowInfo, _$colInfo, _playerColor
 

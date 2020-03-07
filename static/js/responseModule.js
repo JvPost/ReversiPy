@@ -1,4 +1,6 @@
-SPA.responseModule = (($) => {
+let responseModule = (($) => {
+    "use strict"
+
     let move, getGameInfo;
     let _path = "http://localhost:5001";
     

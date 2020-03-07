@@ -1,13 +1,16 @@
 const SPA = (($) => {
+    "use strict"
+
     let init;
+    let _$spa, _$container
 
     init = (spaID) => {
-        $spa = $("#" + spaID); 
-        $container = $('<div id="reversi-board-container">')
-        $spa.append($container)
-        SPA.gameModule.init($container);
+        _$spa = $("#" + spaID); 
+        _$container = $('<div id="reversi-board-container">')
+        _$spa.append(_$container)
+        gameModule.init(_$container);
 
-        const fields = $($container).find('.reversi-field');
+        const fields = $(_$container).find('.reversi-field');
         $(fields).on('click', (ev) => {
             let data = $(ev.target).data();
             makeMove(data['col'], data['row']);
@@ -18,16 +21,15 @@ const SPA = (($) => {
         $(btn).on('click', function(){
             getGameInfo(0);
         });
-        $($spa).append(btn);
+        $(_$spa).append(btn);
     }
 
     let makeMove = (col, row) => {
         return new Promise((resolve, reject) => {
-            let moveResponse = SPA.responseModule.move(0, col, row);
+            let moveResponse = responseModule.move(0, col, row);
             Promise.all([moveResponse])
             .then(() => {
-                SPA.gameModule.updateGrid(row, col);
-                
+                gameModule.updateGrid(row, col);
             })
             .catch(() => {
                 alert('something went wrong.');
@@ -37,7 +39,7 @@ const SPA = (($) => {
 
     let getGameInfo = (token) => {
         return new Promise((resolve, reject) => {
-            let gameInfoPromise = SPA.responseModule.getGameInfo(token);
+            let gameInfoPromise = responseModule.getGameInfo(token);
             Promise.all([gameInfoPromise])
             .then((gameInfo) => {
                 console.log(gameInfo)
