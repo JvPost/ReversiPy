@@ -10,13 +10,14 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 SESSION_TYPE = ''
 
 games = {
-    '0': Game(0, 'white', 'black') # TODO: fix
+    '0': Game(0, 'white', 'black')
 }
 
 @app.route('/api/Spel/GetToken', methods = ['GET'])
 def getToken():
-    
-    return 'token'
+    if ('token' not in session):
+        session['token'] = 'ASDF1234'
+    return session['token']
 
 @app.route('/api/Spel/<token>', methods = ['GET'])
 def getGameInfo(token):
@@ -54,11 +55,11 @@ def move():
         reqDict = RequestDataDict(request.get_data())
         try:
             if (reqDict['moveType'] == 0): # placing stone
-                game = games['0'] # TODO add token
+                game = games['0']
                 game.update(0, reqDict['row'], reqDict['col'])
             response.status_code = 200
-        except Exception: # TODO make specific
-            response.status_code = 401 # TODO illegal move status_code maybe? idk yet
+        except Exception:
+            response.status_code = 401
     return response
 
 @app.route('/api/Spel/Opgeven', methods = ['PUT'])

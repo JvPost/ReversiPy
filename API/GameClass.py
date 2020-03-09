@@ -2,7 +2,7 @@ class Game:
     def __init__(self, token, playerWhite, playerBlack):
         self.token = token
         # self.white = playerWhite
-        self.white = 0 # TODO: fix to above
+        self.white = 0 
         self.black = playerBlack
         self.grid = {
                 "A": [0,0,0,0,0,0,0,0],

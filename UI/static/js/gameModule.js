@@ -20,7 +20,7 @@ let GameModule = (($) => {
         _$rowInfo = $('<div id="row-info">');
         _$colInfo = $('<div id="col-info">');
         _$board = $('<div id="reversi-board">');
-        _playerColor = 1 // TODO make either 1 for white and -1 for black
+        _playerColor = 1 
 
         // loop rows
         for(let i = 0; i < 8; i++){

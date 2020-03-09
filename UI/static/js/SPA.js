@@ -2,13 +2,14 @@ const SPA = (($) => {
     "use strict"
 
     let init;
-    let _$spa, _$container, _token // todo set token
+    let _$spa, _$container, _token 
 
     init = (spa) => {
         _$spa = $(spa); 
         _$container = $('<div id="reversi-board-container">')
         _$spa.append(_$container)
         GameModule.init(_$container);
+        ResponseModule.init();
 
         // move event handlers
         const fields = $(_$container).find('.reversi-field');
@@ -20,7 +21,7 @@ const SPA = (($) => {
         // game info button
         let btn = $('<input type="button" value="log data from test game" >');
         $(btn).on('click', function(){
-            getGameInfo(0); // TODO add token
+            getGameInfo(0);
         });
 
         let surrenderBtn = $('<input type="button" value="Surrender"');
