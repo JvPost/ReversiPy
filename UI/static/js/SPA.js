@@ -6,10 +6,22 @@ const SPA = (($) => {
 
     init = (spa) => {
         _$spa = $(spa); 
-        _$container = $('<div id="reversi-board-container">')
-        _$spa.append(_$container)
-        GameModule.init(_$container);
-        ResponseModule.init();
+
+        // TODO: Try and set up session with GameAPI.
+        ResponseModule.getPlayerToken()
+        .then((token) => {
+            _token = token
+        })
+        .then(() => {
+            ResponseModule.joinGame(_token)
+            .then((jsonGridString) => {
+                _$container = $('<div id="reversi-board-container">');
+                _$spa.append(_$container);
+                GameModule.init(_$container, JSON.parse(jsonGridString))
+            });
+        });
+        
+
 
         // move event handlers
         const fields = $(_$container).find('.reversi-field');
@@ -24,7 +36,7 @@ const SPA = (($) => {
             getGameInfo(0);
         });
 
-        let surrenderBtn = $('<input type="button" value="Surrender"');
+        let surrenderBtn = $('<input type="button" value="Surrender>"');
         $(surrenderBtn).on('click', () => {
 
         });
@@ -57,10 +69,9 @@ const SPA = (($) => {
         });
     }
 
-    let surrender = (token) => {
-        return new Promise((resolve, reject) => {
-            let surrenderPromise = ResponseModule.surrender(token);
-            
+    let getGameInfoFromPlayerToken = (playerToken) => {
+        return new Promise ((resolve, reject) => {
+            let gameInfo = ResponseModuke.getGameInfoFromPlayerToken(playerToken);
         })
     }
     

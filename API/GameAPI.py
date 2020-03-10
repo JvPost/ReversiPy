@@ -1,25 +1,23 @@
-from flask import Flask, request, jsonify, Response, session
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import json 
+import redis
+import uuid
+
 from GameClass import Game
+
 
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['SECRET_KEY'] = 'GeheimL0l!'
 
-SESSION_TYPE = ''
+rServer = redis.Redis(host="localhost", port = 6379, db=0)
 
-games = {
-    '0': Game(0, 'white', 'black')
-}
+games = {}
 
-@app.route('/api/Spel/GetToken', methods = ['GET'])
-def getToken():
-    if ('token' not in session):
-        session['token'] = 'ASDF1234'
-    return session['token']
 
-@app.route('/api/Spel/<token>', methods = ['GET'])
+@app.route('/api/Spel/<token>', methods = ['GET', 'POST'])
 def getGameInfo(token):
     response = Response()
     if request.method == 'GET':
@@ -71,6 +69,40 @@ def giveUp():
     else:
         response.status_code = 400
     return response
+
+@app.route('/api/Spel/GetPlayerToken', methods = ['GET'])
+def getPlayerToken():
+    remoteIP = request.remote_addr
+    remoteBrowser = request.user_agent.browser
+    key = remoteIP + '-' + remoteBrowser
+    token = str(uuid.uuid4())
+    rServer.set(key, token)
+    return token 
+
+@app.route('/api/Spel/JoinGame', methods = ['PUT'])
+def joinGame():
+    response = Response()
+    response.status_code = 400
+    if request.method == 'PUT':
+        reqDict = RequestDataDict(request.get_data())
+        playerToken = reqDict['token']
+        if (any(game.white == playerToken or game.black == playerToken for game in games.values())): # already in game
+            response.status_code = 200
+            raise('should not be possible right now')
+        elif (len(games) % 2 != 0): # join existing game TODO: spawn push stuff
+            response.status_code = 200
+            raise('should not be possible yet')
+        else: # new game
+            newGameToken = str(uuid.uuid4())
+            game = Game(newGameToken, playerToken, None)
+            games[newGameToken] = game
+            response.set_data(str(game.grid).replace("'", '"'))
+            # TODO: spawn push stuff
+            response.status_code = 201
+            
+    return response
+
+
 
 def RequestDataDict(requestData):
     reqDataBytes = request.get_data()

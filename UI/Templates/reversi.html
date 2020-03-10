@@ -2,14 +2,17 @@
 <html lang = "en">
 <head>
 <!-- basic.html -->
-<title>INdex</title>
+<title>ReversiPy</title>
 <meta charset = "UTF-8" />
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/game.css') }}">
 
 </head>
 <body>
-<h2>INDEX</h2>
+<h2>ReversiPy</h2>
+<div id="spa">
+    
+</div>
 
 <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 
@@ -22,7 +25,9 @@
 
 
 <script>
-    console.log(document.cookie);
+    $(function(){
+        SPA.init($("#spa"));
+    });
 </script>
 
 </body>

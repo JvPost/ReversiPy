@@ -1,33 +1,9 @@
 let ResponseModule = (($) => {
     "use strict"
 
-    let init, move, getGameInfo, getPlayerToken;
+    let move, getGameInfo, getPlayerToken, joinGame, getGameInfoFromPlayerToken;
     let _path = "http://localhost:5001";
-    let _isInit = false;
     
-    let init = () => {
-        if (!_isInit){
-            Promise((reject, resolve) => {
-                $.ajax({
-                    url: _path + '/api/Spel/GetToken',
-                    method: 'GET',
-                    success: (data) => {
-                        _isInit = true;
-                        resolve(data);
-                    },
-                    failed: () => {
-                        reject('No token allowed');
-                    }
-                })
-            }).then((result) => {
-                
-            }).catch((err) => {
-                
-            });
-        }
-
-        return _isInit;
-    }
 
     // movetype, row, col
     move = (moveType, col, row) => {
@@ -65,14 +41,50 @@ let ResponseModule = (($) => {
 
     getPlayerToken = () => {
         return new Promise((resolve, reject) => {
-            $.ajax(_path + '')
+            $.ajax(_path + '/api/Spel/GetPlayerToken',
+            {
+                method: 'GET',
+                success: (data) => {
+                    resolve(data);
+                },
+                failed: (data) => {
+                    reject('failed');
+                }
+            });
+        });
+    }
+
+    joinGame = (token) => {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: _path + '/api/Spel/JoinGame',
+                method: 'PUT',
+                data: JSON.stringify({
+                    token: token
+                }),
+                success: (data) => {
+                    resolve(data);
+                },
+                failed: () => {
+                    reject('failed');
+                }
+            });
+        });
+    }
+
+    getGameInfoFromPlayerToken = (token) => {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                // TODO
+            });
         });
     }
 
     return {
-        init: init,
         move : move,
         getGameInfo: getGameInfo,
-        getToken: getPlayerToken
+        getPlayerToken : getPlayerToken,
+        joinGame: joinGame,
+        getGameInfoFromPlayerToken: getGameInfoFromPlayerToken
     };
 })($);

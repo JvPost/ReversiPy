@@ -4,37 +4,47 @@ let GameModule = (($) => {
     let init, updateGrid;
     let _$container, _grid, _$board, _$rowInfo, _$colInfo, _playerColor
 
-    init = ($container) => {
+    init = ($container, grid) => {
         _$container = $container
-        _grid = {
-            "A" : [],
-            "B" : [],
-            "C" : [],
-            "D" : [],
-            "E" : [],
-            "F" : [],
-            "G" : [],
-            "H" : [],
-        }
+        _grid = grid
         
         _$rowInfo = $('<div id="row-info">');
         _$colInfo = $('<div id="col-info">');
         _$board = $('<div id="reversi-board">');
         _playerColor = 1 
 
-        // loop rows
-        for(let i = 0; i < 8; i++){
-            let row = i+1;
-            $(_$rowInfo).append('<div class="row-info-cell"> <span>'+ row.toString() +'</span> </div>');
-            // loop cols to make fields
-            for (const key in _grid) {
-                if (_grid.hasOwnProperty(key)) {
-                    let $field = $('<div data-row="'+ row +'" data-col="'+ key +'" data-played="0" class="reversi-field"></div>');
-                    _grid[key].push($field);
-                    $(_$board).append($field);
+        let letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+
+
+
+        for (let i = 0; i < letters.length; i++){
+            let row = _grid[letters[i]];
+            let rowIndicator = i+1;
+            $(_$rowInfo).append('<div class="row-info-cell"> <span>'+ rowIndicator +'</span> </div>');
+            for (let j = 0; j < row.length; j++){
+                let key = letters[j];
+                let playedBy = row[j];
+                let $field = $('<div data-row="'+ rowIndicator +'" data-col="'+ key +'" data-played=' + playedBy + ' class="reversi-field"></div>');
+                if (playedBy != 0){
+                    $field.append(fiche());
                 }
+                $(_$board).append($field);
             }
         }
+
+        // // loop rows
+        // for(let i = 0; i < 8; i++){
+        //     let row = i+1;
+        //     $(_$rowInfo).append('<div class="row-info-cell"> <span>'+ row.toString() +'</span> </div>');
+        //     // loop cols to make fields
+        //     for (const key in _grid) {
+        //         if (_grid.hasOwnProperty(key)) {
+        //             let $field = $('<div data-row="'+ row +'" data-col="'+ key +'" data-played="0" class="reversi-field"></div>');
+        //             _grid[key].push($field);
+        //             $(_$board).append($field);
+        //         }
+        //     }
+        // }
 
         // loop cols
         for (const key in _grid) {
