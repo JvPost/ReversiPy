@@ -15,8 +15,6 @@ let GameModule = (($) => {
 
         let letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
-
-
         for (let i = 0; i < letters.length; i++){
             let row = _grid[letters[i]];
             let rowIndicator = i+1;
@@ -32,20 +30,6 @@ let GameModule = (($) => {
             }
         }
 
-        // // loop rows
-        // for(let i = 0; i < 8; i++){
-        //     let row = i+1;
-        //     $(_$rowInfo).append('<div class="row-info-cell"> <span>'+ row.toString() +'</span> </div>');
-        //     // loop cols to make fields
-        //     for (const key in _grid) {
-        //         if (_grid.hasOwnProperty(key)) {
-        //             let $field = $('<div data-row="'+ row +'" data-col="'+ key +'" data-played="0" class="reversi-field"></div>');
-        //             _grid[key].push($field);
-        //             $(_$board).append($field);
-        //         }
-        //     }
-        // }
-
         // loop cols
         for (const key in _grid) {
             if (_grid.hasOwnProperty(key)) {
@@ -58,18 +42,29 @@ let GameModule = (($) => {
         $(_$container).append(_$colInfo);
     }
     
-    updateGrid = (row, col) => {
-        let field = _grid[col][row - 1];
-        $(field).attr("data-played", _playerColor);
-        field.append(fiche());
+    updateGrid = (row, col, playerColor) => {
+        let fields = $('.reversi-field');
+        let start = (row-1) * 8;
+        let end = start + 8;
+        for( let i = start; i<end; i++){
+            console.log(i)
+            if ($(fields[i]).attr('data-col') == col){
+                $(fields[i]).attr("data-played", playerColor);
+                $(fields[i]).append(fiche());
+                break;
+            }
+        }
     }
 
     let fiche = () => {
         return $('<div class="fiche"></div>');
     }
 
+    
+
     return {
         init: init,
-        updateGrid: updateGrid
+        updateGrid: updateGrid,
+        test: () => { console.log('test'); }
     } 
 })($);

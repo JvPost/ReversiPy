@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
+from first import first
+
 import json 
 import redis
 import uuid
+
 
 from GameClass import Game
 
@@ -12,7 +15,8 @@ CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'GeheimL0l!'
 
-rServer = redis.Redis(host="localhost", port = 6379, db=0)
+redisPlayerServer = redis.Redis(host="localhost", port = 6379, db=0)
+redisStreamServer = redis.StrictRedis(db=1)
 
 games = {}
 
@@ -51,13 +55,24 @@ def move():
         #   Het token van het spel en speler moeten meegegeven worden.
         #   Ook passen moet mogelijk zijn.
         reqDict = RequestDataDict(request.get_data())
+        game = None
+        legalMove = False
         try:
+            game = GetGameFromPlayerToken(reqDict['playerToken'])
             if (reqDict['moveType'] == 0): # placing stone
-                game = games['0']
-                game.update(0, reqDict['row'], reqDict['col'])
+                legalMove = game.update(reqDict['playerToken'], reqDict['row'], reqDict['col'])
             response.status_code = 200
-        except Exception:
+        except Exception as exception:
+            print (exception)
             response.status_code = 401
+        if (game is not None and legalMove):
+            playerColor = -1 if reqDict['playerToken'] == game.black else 1
+            json = str(
+                {   'moveType': 0,
+                    'col': reqDict['col'],
+                    'row': reqDict['row'],
+                    'playerColor': playerColor }).replace("'", '"')
+            redisStreamServer.publish(game.token, json)
     return response
 
 @app.route('/api/Spel/Opgeven', methods = ['PUT'])
@@ -76,7 +91,7 @@ def getPlayerToken():
     remoteBrowser = request.user_agent.browser
     key = remoteIP + '-' + remoteBrowser
     token = str(uuid.uuid4())
-    rServer.set(key, token)
+    redisPlayerServer.set(key, token)
     return token 
 
 @app.route('/api/Spel/JoinGame', methods = ['PUT'])
@@ -85,29 +100,55 @@ def joinGame():
     response.status_code = 400
     if request.method == 'PUT':
         reqDict = RequestDataDict(request.get_data())
-        playerToken = reqDict['token']
-        if (any(game.white == playerToken or game.black == playerToken for game in games.values())): # already in game
+        playerToken = reqDict['playerToken']
+        game = GetGameFromPlayerToken(playerToken)
+        if (game is not None): # already in game
+            response.status_code = 200                
+        elif (len(games) % 2 != 0): # join existing game
+            game = first(games.values(), key = lambda g: g.white == None or g.black == None)
+            game.addPlayer(playerToken)
             response.status_code = 200
-            raise('should not be possible right now')
-        elif (len(games) % 2 != 0): # join existing game TODO: spawn push stuff
-            response.status_code = 200
-            raise('should not be possible yet')
         else: # new game
             newGameToken = str(uuid.uuid4())
             game = Game(newGameToken, playerToken, None)
             games[newGameToken] = game
-            response.set_data(str(game.grid).replace("'", '"'))
-            # TODO: spawn push stuff
-            response.status_code = 201
             
+            response.status_code = 201
+        
+        responseDict = {
+                'gameToken': game.token,
+                'gameGrid': game.grid,
+                'playerColor': -1 if playerToken == game.black else 1
+            }
+
+        response.set_data(str(responseDict).replace("'", '"'))
     return response
 
+@app.route('/api/Spel/Event/<playerToken>', methods = ['GET'])
+def event(playerToken):
+    game = GetGameFromPlayerToken(playerToken)
+    if (game is not None):
+        return Response(EventStream(game.token), mimetype='text/event-stream')
+    else:
+        return 'error'
 
+def EventStream(gameToken):
+    pubsub = redisStreamServer.pubsub()
+    pubsub.subscribe(gameToken) 
+    for message in pubsub.listen():
+        print (message)
+        yield 'data:%s\n\n' % message['data']
 
 def RequestDataDict(requestData):
     reqDataBytes = request.get_data()
     reqDataString = reqDataBytes.decode('utf8').replace("'", '"')
-    return  json.loads(reqDataString)
+    return json.loads(reqDataString)
+
+def GetGameFromPlayerToken(playerToken):
+    for g in games.values():
+        if g.black == playerToken or g.white == playerToken:
+            return g
+    return None
 
 if __name__ == "__main__":
     app.run(

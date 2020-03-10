@@ -6,30 +6,35 @@ const SPA = (($) => {
 
     init = (spa) => {
         _$spa = $(spa); 
-
-        // TODO: Try and set up session with GameAPI.
         ResponseModule.getPlayerToken()
         .then((token) => {
             _token = token
         })
         .then(() => {
             ResponseModule.joinGame(_token)
-            .then((jsonGridString) => {
+            .then((responseJsonString) => {
+                let gameJson = JSON.parse(responseJsonString);
+                let gameGrid = gameJson['gameGrid'];
+                let gameToken = gameJson['gameToken'];
+                $('#Title').append(gameJson['playerColor'] == -1 ? ' (b)' : ' (w)');
                 _$container = $('<div id="reversi-board-container">');
                 _$spa.append(_$container);
-                GameModule.init(_$container, JSON.parse(jsonGridString))
+                GameModule.init(_$container, gameGrid)
+            })
+            .then(() => {
+                // move event handlers
+                const fields = $(_$container).find('.reversi-field');
+                $(fields).on('click', (ev) => {
+                    let data = $(ev.target).data();
+                    makeMove(data['col'], data['row']);
+                });
+            })
+            .then(() => {
+                Listening();
             });
         });
+
         
-
-
-        // move event handlers
-        const fields = $(_$container).find('.reversi-field');
-        $(fields).on('click', (ev) => {
-            let data = $(ev.target).data();
-            makeMove(data['col'], data['row']);
-        });
-
         // game info button
         let btn = $('<input type="button" value="log data from test game" >');
         $(btn).on('click', function(){
@@ -46,10 +51,7 @@ const SPA = (($) => {
 
     let makeMove = (col, row) => {
         return new Promise((resolve, reject) => {
-            ResponseModule.move(0, col, row)
-            .then(() => {
-                GameModule.updateGrid(row, col);
-            })
+            ResponseModule.move(0, col, row, _token)
             .catch(() => {
                 alert('something went wrong.');
             });
@@ -69,12 +71,11 @@ const SPA = (($) => {
         });
     }
 
-    let getGameInfoFromPlayerToken = (playerToken) => {
-        return new Promise ((resolve, reject) => {
-            let gameInfo = ResponseModuke.getGameInfoFromPlayerToken(playerToken);
-        })
+    //Listen for move
+    let Listening = () => {
+        ResponseModule.listen(_token, GameModule.updateGrid);
     }
-    
+
     return {
         init : init
     }

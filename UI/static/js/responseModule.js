@@ -1,12 +1,12 @@
 let ResponseModule = (($) => {
     "use strict"
 
-    let move, getGameInfo, getPlayerToken, joinGame, getGameInfoFromPlayerToken;
+    let move, getGameInfo, getPlayerToken, joinGame, listen;
     let _path = "http://localhost:5001";
     
 
     // movetype, row, col
-    move = (moveType, col, row) => {
+    move = (moveType, col, row, playerToken) => {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: _path + '/api/Spel/Zet',
@@ -14,12 +14,16 @@ let ResponseModule = (($) => {
                 data: JSON.stringify({ 
                     moveType: moveType,
                     col: col,
-                    row: row
+                    row: row,
+                    playerToken: playerToken
+                    // TODO: Add game token
                 }),
                 success: (data) => {
+                    console.log('resolved')
                     resolve(data);
                 },
                 failed: (data) => {
+                    console.log('failed')
                     reject('failed');
                 }
             });
@@ -54,13 +58,13 @@ let ResponseModule = (($) => {
         });
     }
 
-    joinGame = (token) => {
+    joinGame = (playerToken) => {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: _path + '/api/Spel/JoinGame',
                 method: 'PUT',
                 data: JSON.stringify({
-                    token: token
+                    playerToken: playerToken
                 }),
                 success: (data) => {
                     resolve(data);
@@ -72,19 +76,22 @@ let ResponseModule = (($) => {
         });
     }
 
-    getGameInfoFromPlayerToken = (token) => {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                // TODO
-            });
-        });
+    listen = (playerToken, callback) => {
+        var source = new EventSource(_path + '/api/Spel/Event/' + playerToken);
+        source.onmessage = (event) => {
+            if (event.data != "1"){
+                let eventStr = event.data.split("'")[1];
+                let eventJson = JSON.parse(eventStr);
+                callback(eventJson['row'], eventJson['col'], eventJson['playerColor']);
+            }
+        }
     }
-
+    
     return {
         move : move,
         getGameInfo: getGameInfo,
         getPlayerToken : getPlayerToken,
         joinGame: joinGame,
-        getGameInfoFromPlayerToken: getGameInfoFromPlayerToken
+        listen: listen
     };
 })($);
