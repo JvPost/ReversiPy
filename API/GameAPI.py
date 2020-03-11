@@ -90,8 +90,10 @@ def getPlayerToken():
     remoteIP = request.remote_addr
     remoteBrowser = request.user_agent.browser
     key = remoteIP + '-' + remoteBrowser
-    token = str(uuid.uuid4())
-    redisPlayerServer.set(key, token)
+    token = redisPlayerServer.get(key)
+    if (token is None):
+        token = str(uuid.uuid4())
+        redisPlayerServer.set(key, token)    
     return token 
 
 @app.route('/api/Spel/JoinGame', methods = ['PUT'])
