@@ -82,7 +82,7 @@ let ResponseModule = (($) => {
             if (event.data != "1"){
                 let eventStr = event.data.split("'")[1];
                 let eventJson = JSON.parse(eventStr);
-                callback(eventJson['row'], eventJson['col'], eventJson['playerColor']);
+                callback(eventJson)
             }
         }
     }

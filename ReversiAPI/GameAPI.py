@@ -7,7 +7,7 @@ import redis
 import uuid
 
 
-from GameClass import Game
+from Reversi import Game
 
 
 app = Flask(__name__)
@@ -20,6 +20,63 @@ redisStreamServer = redis.StrictRedis(db=1)
 
 games = {}
 
+@app.route('/api/Spel/JoinGame', methods = ['PUT'])
+def joinGame():
+    response = Response()
+    response.status_code = 400
+    if request.method == 'PUT':
+        reqDict = RequestDataDict(request.get_data())
+        playerToken = reqDict['playerToken']
+        game = GetGameFromPlayerToken(playerToken)
+        if (game is not None): # already in game
+            response.status_code = 200                
+        elif (len(games) % 2 != 0): # join existing game
+            game = first(games.values(), key = lambda g: g.white == None or g.black == None)
+            game.addPlayer(playerToken)
+            response.status_code = 200
+        else: # new game
+            newGameToken = str(uuid.uuid4())
+            game = Game(newGameToken, playerToken, None)
+            games[newGameToken] = game
+            
+            response.status_code = 201
+        
+        responseDict = {
+                'gameToken': game.token,
+                'gameColumns': game.columns,
+                'gameGrid': str(game.board),
+                'playerColor': -1 if playerToken == game.black else 1
+            }
+
+        response.set_data(str(responseDict).replace("'", '"'))
+    return response
+
+    
+@app.route('/api/Spel/Zet', methods = ['PUT'])
+def move():
+    response = Response()
+    response.status_code = 400
+    if request.method == 'PUT':
+        #   Stuurt het veld naar de server waar een fiche wordt geplaatst.
+        #   Het token van het spel en speler moeten meegegeven worden.
+        #   Ook passen moet mogelijk zijn.
+        reqDict = RequestDataDict(request.get_data())
+        game = None
+        legalMove = False
+        try:
+            game = GetGameFromPlayerToken(reqDict['playerToken'])
+            if (reqDict['moveType'] == 0): # placing stone
+                legalMove = game.update(reqDict['playerToken'], reqDict['row'], reqDict['col'])
+            response.status_code = 200
+        except Exception as exception:
+            response.status_code = 401
+        if (game is not None and legalMove):
+            playerColor = -1 if reqDict['playerToken'] == game.black else 1
+            json = str(
+                game.board
+            ).replace("'", '"')
+            redisStreamServer.publish(game.token, json)
+    return response
 
 @app.route('/api/Spel/<token>', methods = ['GET', 'POST'])
 def getGameInfo(token):
@@ -46,40 +103,11 @@ def beurt(token):
     return response
 
 
-@app.route('/api/Spel/Zet', methods = ['PUT'])
-def move():
-    response = Response()
-    response.status_code = 400
-    if request.method == 'PUT':
-        #   Stuurt het veld naar de server waar een fiche wordt geplaatst.
-        #   Het token van het spel en speler moeten meegegeven worden.
-        #   Ook passen moet mogelijk zijn.
-        reqDict = RequestDataDict(request.get_data())
-        game = None
-        legalMove = False
-        try:
-            game = GetGameFromPlayerToken(reqDict['playerToken'])
-            if (reqDict['moveType'] == 0): # placing stone
-                legalMove = game.update(reqDict['playerToken'], reqDict['row'], reqDict['col'])
-            response.status_code = 200
-        except Exception as exception:
-            print (exception)
-            response.status_code = 401
-        if (game is not None and legalMove):
-            playerColor = -1 if reqDict['playerToken'] == game.black else 1
-            json = str(
-                {   'moveType': 0,
-                    'col': reqDict['col'],
-                    'row': reqDict['row'],
-                    'playerColor': playerColor }).replace("'", '"')
-            redisStreamServer.publish(game.token, json)
-    return response
 
 @app.route('/api/Spel/Opgeven', methods = ['PUT'])
 def giveUp():
     response = Response()
     if request.method == 'PUT':
-        #logic
         response.status_code = 200
     else:
         response.status_code = 400
@@ -96,35 +124,7 @@ def getPlayerToken():
         redisPlayerServer.set(key, token)    
     return token 
 
-@app.route('/api/Spel/JoinGame', methods = ['PUT'])
-def joinGame():
-    response = Response()
-    response.status_code = 400
-    if request.method == 'PUT':
-        reqDict = RequestDataDict(request.get_data())
-        playerToken = reqDict['playerToken']
-        game = GetGameFromPlayerToken(playerToken)
-        if (game is not None): # already in game
-            response.status_code = 200                
-        elif (len(games) % 2 != 0): # join existing game
-            game = first(games.values(), key = lambda g: g.white == None or g.black == None)
-            game.addPlayer(playerToken)
-            response.status_code = 200
-        else: # new game
-            newGameToken = str(uuid.uuid4())
-            game = Game(newGameToken, playerToken, None)
-            games[newGameToken] = game
-            
-            response.status_code = 201
-        
-        responseDict = {
-                'gameToken': game.token,
-                'gameGrid': game.grid,
-                'playerColor': -1 if playerToken == game.black else 1
-            }
 
-        response.set_data(str(responseDict).replace("'", '"'))
-    return response
 
 @app.route('/api/Spel/Event/<playerToken>', methods = ['GET'])
 def event(playerToken):
@@ -138,7 +138,6 @@ def EventStream(gameToken):
     pubsub = redisStreamServer.pubsub()
     pubsub.subscribe(gameToken) 
     for message in pubsub.listen():
-        print (message)
         yield 'data:%s\n\n' % message['data']
 
 def RequestDataDict(requestData):

@@ -14,12 +14,13 @@ const SPA = (($) => {
             ResponseModule.joinGame(_token)
             .then((responseJsonString) => {
                 let gameJson = JSON.parse(responseJsonString);
-                let gameGrid = gameJson['gameGrid'];
+                let gameColumns = gameJson['gameColumns'];
+                let gameGrid = JSON.parse(gameJson['gameGrid']);
                 let gameToken = gameJson['gameToken'];
                 $('#Title').append(gameJson['playerColor'] == -1 ? ' (b)' : ' (w)');
                 _$container = $('<div id="reversi-board-container">');
                 _$spa.append(_$container);
-                GameModule.init(_$container, gameGrid)
+                GameModule.init(_$container, gameColumns, gameGrid);
             })
             .then(() => {
                 // move event handlers
