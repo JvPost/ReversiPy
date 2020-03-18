@@ -20,6 +20,21 @@ redisStreamServer = redis.StrictRedis(db=1)
 
 games = {}
 
+### ####################################### ###
+###             Done                        ###
+### ####################################### ###
+
+@app.route('/api/Spel/GetPlayerToken', methods = ['GET'])
+def getPlayerToken():
+    remoteIP = request.remote_addr
+    remoteBrowser = request.user_agent.browser
+    key = remoteIP + '-' + remoteBrowser
+    token = redisPlayerServer.get(key)
+    if (token is None):
+        token = str(uuid.uuid4())
+        redisPlayerServer.set(key, token)    
+    return token 
+
 @app.route('/api/Spel/JoinGame', methods = ['PUT'])
 def joinGame():
     response = Response()
@@ -78,6 +93,20 @@ def move():
             redisStreamServer.publish(game.token, json)
     return response
 
+
+
+@app.route('/api/Spel/Event/<playerToken>', methods = ['GET'])
+def subscribe(playerToken):
+    game = GetGameFromPlayerToken(playerToken)
+    if (game is not None):
+        return Response(EventStream(game.token), mimetype='text/event-stream')
+    else:
+        return 'error'
+
+### ####################################### ###
+###             to-do                       ###
+### ####################################### ###
+
 @app.route('/api/Spel/<token>', methods = ['GET', 'POST'])
 def getGameInfo(token):
     response = Response()
@@ -102,8 +131,6 @@ def beurt(token):
         response.status_code = 400
     return response
 
-
-
 @app.route('/api/Spel/Opgeven', methods = ['PUT'])
 def giveUp():
     response = Response()
@@ -113,26 +140,11 @@ def giveUp():
         response.status_code = 400
     return response
 
-@app.route('/api/Spel/GetPlayerToken', methods = ['GET'])
-def getPlayerToken():
-    remoteIP = request.remote_addr
-    remoteBrowser = request.user_agent.browser
-    key = remoteIP + '-' + remoteBrowser
-    token = redisPlayerServer.get(key)
-    if (token is None):
-        token = str(uuid.uuid4())
-        redisPlayerServer.set(key, token)    
-    return token 
 
 
-
-@app.route('/api/Spel/Event/<playerToken>', methods = ['GET'])
-def event(playerToken):
-    game = GetGameFromPlayerToken(playerToken)
-    if (game is not None):
-        return Response(EventStream(game.token), mimetype='text/event-stream')
-    else:
-        return 'error'
+### ####################################### ###
+###             Helpers                     ###
+### ####################################### ###
 
 def EventStream(gameToken):
     pubsub = redisStreamServer.pubsub()

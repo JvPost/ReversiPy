@@ -4,7 +4,6 @@ let GameModule = (($) => {
     let init, updateGrid;
     let _$container, _$grid = [], _grid, _$board, _$rowInfo, _$colInfo, _playerColor, _columns
     
-
     init = ($container, columns, grid) => {
         // vars
         _columns = columns;
@@ -43,9 +42,7 @@ let GameModule = (($) => {
         $(_$container).append(_$board);
         $(_$container).append(_$colInfo);
     }
-
-
-
+    
     updateGrid = (newGrid) => {
         let r = 0;
         newGrid.forEach(row => {
@@ -70,9 +67,7 @@ let GameModule = (($) => {
     let fiche = () => {
         return $('<div class="fiche"></div>');
     }
-
     
-
     return {
         init: init,
         updateGrid: updateGrid,

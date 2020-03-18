@@ -8,7 +8,7 @@ let ResponseModule = (($) => {
     // movetype, row, col
     move = (moveType, col, row, playerToken) => {
         return new Promise((resolve, reject) => {
-            $.ajax({
+            return $.ajax({
                 url: _path + '/api/Spel/Zet',
                 method: 'PUT',
                 data: JSON.stringify({ 
@@ -19,7 +19,6 @@ let ResponseModule = (($) => {
                     // TODO: Add game token
                 }),
                 success: (data) => {
-                    console.log('resolved')
                     resolve(data);
                 },
                 failed: (data) => {
@@ -32,7 +31,7 @@ let ResponseModule = (($) => {
 
     getGameInfo = (token = 0) => {
         return new Promise((resolve, reject) => {
-            $.ajax(_path + '/api/Spel/' + token, {
+            return $.ajax(_path + '/api/Spel/' + token, {
                 success: (data) => {
                     resolve(data);
                 },
@@ -43,24 +42,27 @@ let ResponseModule = (($) => {
         });
     }
 
+    /**
+     * Returns promise token for a player token. When the promise succeeds a token is returned, else 'failed' is returned.
+     */
     getPlayerToken = () => {
         return new Promise((resolve, reject) => {
-            $.ajax(_path + '/api/Spel/GetPlayerToken',
-            {
-                method: 'GET',
-                success: (data) => {
-                    resolve(data);
-                },
-                failed: (data) => {
-                    reject('failed');
-                }
-            });
+            return $.ajax(_path + '/api/Spel/GetPlayerToken',
+                {
+                    method: 'GET',
+                    success: (data) => {
+                        resolve(data);
+                    },
+                    failed: (data) => {
+                        reject('failed'); // TODO: add search for game?
+                    }
+                });
         });
     }
 
     joinGame = (playerToken) => {
         return new Promise((resolve, reject) => {
-            $.ajax({
+            return $.ajax({
                 url: _path + '/api/Spel/JoinGame',
                 method: 'PUT',
                 data: JSON.stringify({

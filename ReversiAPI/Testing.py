@@ -1,5 +1,5 @@
 from Reversi import Game
-from Board import Field, Grid
+from Board import Field, Grid, FieldValue
 
 import pytest
 
@@ -24,11 +24,11 @@ def newGame():
 
 def test_legalMoveTopLeftShouldFail():
     game = newGame()
-    assert game.legalMove(1, 'A') == False
+    assert game.checkBorderedToStone(1, 'A') == False
 
 def test_legalMoveShouldSucceed():
     game = newGame()
-    assert game.legalMove(3, "C")
+    assert game.checkBorderedToStone(3, "C")
 
 
 def test_GridColumnsShouldBeLowerCased():
@@ -52,7 +52,7 @@ def test_GridConstructor():
 
 def test_SettingField():
     grid = Grid(columns)
-    grid.set(4, 'd', -1)
+    grid.set(4, 'd', FieldValue.BLACK)
     valueGrid = [[0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
@@ -61,12 +61,12 @@ def test_SettingField():
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0]]
-    assert valueGrid == grid.toFieldValueArray()
+    assert valueGrid == grid.valueGrid
 
 def test_GettingField():
     grid = Grid(columns)
-    assert grid.get(4, 'd').playedBy == 1
-    assert grid.get(4, 'e' ).playedBy == -1
+    assert grid.get(4, 'd').playedBy == FieldValue.WHITE
+    assert grid.get(4, 'e' ).playedBy == FieldValue.BLACK
 
 def test_gameUpdateChosenFieldShouldBeBlack():
     game = newGame()
@@ -81,7 +81,7 @@ def test_gameUpdateChosenFieldShouldBeBlack():
                 [0, 0, 0, 0,-1, 0, 0, 0], # 6
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
-    assert game.board.toFieldValueArray() == valueGrid
+    assert game.board.valueGrid == valueGrid
 
 def test_gameUpdateChosenFieldShouldBeBlack_ShouldFail():
     game = newGame()
@@ -94,11 +94,12 @@ def test_gameUpdateChosenFieldShouldBeBlack_ShouldFail():
                 [0, 0, 0, 0, 1, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0]]
-    assert (game.board.toFieldValueArray() == valueGrid) == False
+    assert (game.board.valueGrid == valueGrid) == False
 
 def test_flipHorizontalLeft():
     game = newGame()
-    game.flipHorizontal_Left(5, 'f')
+    left = game.getHorizontal_Left(5, 'f')
+    game.flipFieldArray(left)
     valueGrid = [[0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
@@ -107,11 +108,12 @@ def test_flipHorizontalLeft():
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0]]
-    assert (game.board.toFieldValueArray() == valueGrid)
+    assert (game.board.valueGrid == valueGrid)
 
 def test_flipHorizontalRight():
     game = newGame()
-    game.flipHorizontal_Right(4, 'c')
+    right = game.getHorizontal_Right(4, 'c')
+    game.flipFieldArray(right)
     valueGrid = [[0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
@@ -120,12 +122,13 @@ def test_flipHorizontalRight():
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0]]
-    assert (game.board.toFieldValueArray() == valueGrid)
+    assert (game.board.valueGrid == valueGrid)
 
 def test_flipVerticalTop():
     game = newGame()
-    game.flipVertical_top(6, 'e')
-    valueGrid =[
+    top = game.getVertical_top(6, 'e')
+    game.flipFieldArray(top)
+    valueGrid = [
         #        a  b  c  d  e  f  g  h    
                 [0, 0, 0, 0, 0, 0, 0, 0], # 1
                 [0, 0, 0, 0, 0, 0, 0, 0], # 2
@@ -135,11 +138,12 @@ def test_flipVerticalTop():
                 [0, 0, 0, 0, 0, 0, 0, 0], # 6
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
-    assert (game.board.toFieldValueArray() == valueGrid)
+    assert (game.board.valueGrid == valueGrid)
 
 def test_flipVerticalBot():
     game = newGame()
-    game.flipVertical_bot(3, 'd')
+    bot = game.getVertical_bot(3, 'd')
+    game.flipFieldArray(bot)
     valueGrid =[
         #        a  b  c  d  e  f  g  h    
                 [0, 0, 0, 0, 0, 0, 0, 0], # 1
@@ -150,7 +154,7 @@ def test_flipVerticalBot():
                 [0, 0, 0, 0, 0, 0, 0, 0], # 6
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
-    assert (game.board.toFieldValueArray() == valueGrid)
+    assert (game.board.valueGrid == valueGrid)
 
 def test_flipDiagionalTopLeft():
     game = newGame()
@@ -176,8 +180,9 @@ def test_flipDiagionalTopLeft():
                 [0, 0, 0, 0, 0, 0, 0, 0], # 6
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
-    game.flipDiagonal_topLeft(6, 'f')
-    assert (game.board.toFieldValueArray() == newValueGrid)
+    topleft =  game.getDiagonal_topLeft(6, 'f')
+    game.flipFieldArray(topleft)
+    assert (game.board.valueGrid == newValueGrid)
 
 
 def test_flipDiagionalTopRight():
@@ -204,8 +209,9 @@ def test_flipDiagionalTopRight():
                 [0, 0, 0, 0, 0, 0, 0, 0], # 6
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
-    game.flipDiagonal_topRight(6, 'c')
-    assert (game.board.toFieldValueArray() == newValueGrid)
+    topright = game.getDiagonal_topRight(6, 'c')
+    game.flipFieldArray(topright)
+    assert (game.board.valueGrid == newValueGrid)
 
 def test_flipDiagionalBotLeft():
     game = newGame()
@@ -231,8 +237,9 @@ def test_flipDiagionalBotLeft():
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
 
-    game.flipDiagonal_botLeft(3, 'f')
-    assert (game.board.toFieldValueArray() == newValueGrid)
+    botleft = game.getDiagonal_botLeft(3, 'f')
+    game.flipFieldArray(botleft)
+    assert (game.board.valueGrid == newValueGrid)
 
 def test_flipDiagionalBotRight():
     game = newGame()
@@ -258,5 +265,6 @@ def test_flipDiagionalBotRight():
                 [0, 0, 0, 0, 0, 0, 0, 0], # 7
                 [0, 0, 0, 0, 0, 0, 0, 0]] # 8
 
-    game.flipDiagonal_botRight(3, 'c')
-    assert (game.board.toFieldValueArray() == newValueGrid)
+    botright = game.getDiagonal_botRight(3, 'c')
+    game.flipFieldArray(botright)
+    assert (game.board.valueGrid == newValueGrid)

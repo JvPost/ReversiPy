@@ -1,16 +1,15 @@
 [] Speler
     [] - Als speler wil ik een spel kunnen spelen.
-        [ ] - Bij het openen van de pagina wordt een bord laten zien (Fiches worden bepaald door array, van ResponseModule).
-            [ ] - Backend: Bepaal of speler al in spel zit.
+        [X] - Bij het openen van de pagina wordt een bord laten zien (Fiches worden bepaald door array, van ResponseModule).
+            [X] - Backend: Bepaal of speler al in spel zit.
                 [X] - Sessions maken voor unieke combinatie computer + browser
                 [ ] - Session kan verbroken worden, door surrender.
                 [ ] - Session moet verbonden worden met een token, die gebruikt kan worden in de spel communicatie (push en put).
 
-            [ ] - Als het een nieuw spel is.
-                [ ] - Wordt een nieuwe speler voor mij gezorgd, en wordt ik automatisch aan de game toegevoegd. ('api/Spel/joinGame) // NEXT
-                [ ] - Wordt een nieuw bord laten zien.
-            [ ] - Als het een bestaand spel is.
-
+            [X] - Als het een nieuw spel is.
+                [X] - Wordt een nieuwe speler voor mij gezorgd, en wordt ik automatisch aan de game toegevoegd. ('api/Spel/joinGame) // NEXT
+                [X] - Wordt een nieuw bord laten zien.
+            [X] - Als het een bestaand spel is.
                 [ ] -Wordt het bord van het lopende spel laten zien.
 
 [ ] AI
