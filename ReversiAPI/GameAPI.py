@@ -23,25 +23,36 @@ games = {}
 ### ####################################### ###
 ###             Done                        ###
 ### ####################################### ###
-
 @app.route('/api/Spel/GetPlayerToken', methods = ['GET'])
 def getPlayerToken():
-    remoteIP = request.remote_addr
-    remoteBrowser = request.user_agent.browser
-    key = remoteIP + '-' + remoteBrowser
-    token = redisPlayerServer.get(key)
-    if (token is None):
-        token = str(uuid.uuid4())
-        redisPlayerServer.set(key, token)    
-    return token 
+    response = Response(mimetype="application/json")
+    try:    
+        remoteIP = request.remote_addr
+        remoteBrowser = request.user_agent.browser
+        key = remoteIP + '-' + remoteBrowser
+        token = redisPlayerServer.get(key)
+        if (token is None):
+            token = str(uuid.uuid4())
+            redisPlayerServer.set(key, token)    
+        else:
+            token = token.decode("utf-8")
+        response.status_code = 200
+        responseDict = {
+            'playerToken': token
+        }
+        return jsonify(responseDict)
+    except Exception as ex:
+        print(ex)
+        response.status_code = 400
+    return response
 
-@app.route('/api/Spel/JoinGame', methods = ['PUT'])
-def joinGame():
-    response = Response()
+@app.route('/api/Spel/JoinGame/<playerToken>', methods = ['GET'])
+def joinGame(playerToken):
+    response = Response(mimetype='application/json')
     response.status_code = 400
-    if request.method == 'PUT':
-        reqDict = RequestDataDict(request.get_data())
-        playerToken = reqDict['playerToken']
+    if request.method == 'GET':
+        # reqDict = RequestDataDict(request.get_data())
+        # playerToken = reqDict['playerToken']
         game = GetGameFromPlayerToken(playerToken)
         if (game is not None): # already in game
             response.status_code = 200                
@@ -59,11 +70,11 @@ def joinGame():
         responseDict = {
                 'gameToken': game.token,
                 'gameColumns': game.columns,
-                'gameGrid': str(game.board),
+                'gameGrid': game.board.valueGrid,
                 'playerColor': -1 if playerToken == game.black else 1
             }
 
-        response.set_data(str(responseDict).replace("'", '"'))
+        return jsonify(responseDict)
     return response
 
     
@@ -84,6 +95,7 @@ def move():
                 legalMove = game.update(reqDict['playerToken'], reqDict['row'], reqDict['col'])
             response.status_code = 200
         except Exception as exception:
+            print(exception)
             response.status_code = 401
         if (game is not None and legalMove):
             playerColor = -1 if reqDict['playerToken'] == game.black else 1

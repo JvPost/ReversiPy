@@ -6,23 +6,20 @@ const SPA = (($) => {
 
     init = (spa) => {
         _$spa = $(spa); 
-        ResponseModule.getPlayerToken()
-        .then((token) => {
-            _token = token
-        })
-        .then(() => {
-            ResponseModule.joinGame(_token)
-            .then((responseJsonString) => {
-                let gameJson = JSON.parse(responseJsonString);
-                let gameColumns = gameJson['gameColumns'];
-                let gameGrid = JSON.parse(gameJson['gameGrid']);
-                let gameToken = gameJson['gameToken'];
-                $('#Title').append(gameJson['playerColor'] == -1 ? ' (b)' : ' (w)');
+        let tokenPromise = SPA.ResponseModule.getPlayerToken;
+        let gamePromise = SPA.ResponseModule.joinGame;
+
+        tokenPromise().then((tokenData) => {
+            _token = tokenData['playerToken'];
+            gamePromise(tokenData['playerToken']).then((gameData) => {
+                let gameColumns = gameData['gameColumns'];
+                let gameGrid = gameData['gameGrid'];
+                let gameToken = gameData['gameToken'];
+                $('#Title').append(gameData['playerColor'] == -1 ? ' (b)' : ' (w)');
                 _$container = $('<div id="reversi-board-container">');
                 _$spa.append(_$container);
-                GameModule.init(_$container, gameColumns, gameGrid);
-            })
-            .then(() => {
+                SPA.GameModule.init(_$container, gameColumns, gameGrid);
+            }).then(() => {
                 // move event handlers
                 const fields = $(_$container).find('.reversi-field');
                 $(fields).on('click', (ev) => {
@@ -31,11 +28,13 @@ const SPA = (($) => {
                 });
             })
             .then(() => {
-                Listening();
+                listening();
+            })
+            .then(() => {
+                $("#splash-container").css("display", "none");
             });
         });
 
-        
         // game info button
         let btn = $('<input type="button" value="log data from test game" >');
         $(btn).on('click', function(){
@@ -51,17 +50,18 @@ const SPA = (($) => {
     }
 
     let makeMove = (col, row) => {
-        return new Promise((resolve, reject) => {
-            ResponseModule.move(0, col, row, _token)
+        let p = new Promise((resolve, reject) => {
+            SPA.ResponseModule.move(0, col, row, _token)
             .catch(() => {
                 alert('something went wrong.');
             });
         });
+        return p
     }
 
     let getGameInfo = (token) => {
         return new Promise((resolve, reject) => {
-            let gameInfoPromise = ResponseModule.getGameInfo(token);
+            let gameInfoPromise = SPA.ResponseModule.getGameInfo(token);
             Promise.all([gameInfoPromise])
             .then((gameInfo) => {
                 console.log(gameInfo);
@@ -73,12 +73,13 @@ const SPA = (($) => {
     }
 
     //Listen for move
-    let Listening = () => {
-        ResponseModule.listen(_token, GameModule.updateGrid);
+    let listening = () => {
+        SPA.ResponseModule.listen(_token, SPA.GameModule.updateGrid);
     }
 
     return {
-        init : init
+        init : init,
+        listening: listening
     }
 })($);
 

@@ -1,4 +1,4 @@
-let GameModule = (($) => {
+SPA.GameModule = (($) => {
     "use strict"
 
     let init, updateGrid;

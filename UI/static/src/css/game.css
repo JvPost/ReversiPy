@@ -1,0 +1,48 @@
+div {
+  box-sizing: border-box; }
+
+#reversi-board {
+  width: 432px;
+  height: 432px;
+  background-color: white;
+  float: left; }
+  #reversi-board .reversi-field {
+    width: 12.5%;
+    height: 12.5%;
+    border: 2px solid white;
+    background-color: #00bb00;
+    float: left;
+    position: relative; }
+    #reversi-board .reversi-field:hover {
+      border-color: black; }
+    #reversi-board .reversi-field .fiche {
+      width: 90%;
+      height: 90%;
+      position: relative;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px solid black; }
+    #reversi-board .reversi-field[data-played="-1"] .fiche {
+      background-color: black; }
+    #reversi-board .reversi-field[data-played="1"] .fiche {
+      background-color: white; }
+
+#col-info {
+  width: 432px;
+  height: 20px; }
+  #col-info .col-info-cell {
+    text-align: center;
+    height: 100%;
+    width: 12.5%;
+    float: left; }
+
+#row-info {
+  float: left;
+  height: 432px; }
+  #row-info .row-info-cell {
+    height: 12.5%; }
+    #row-info .row-info-cell span {
+      position: relative;
+      top: 50%; }

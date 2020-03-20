@@ -1,4 +1,4 @@
-let ResponseModule = (($) => {
+SPA.ResponseModule = (($) => {
     "use strict"
 
     let move, getGameInfo, getPlayerToken, joinGame, listen;
@@ -61,13 +61,10 @@ let ResponseModule = (($) => {
     }
 
     joinGame = (playerToken) => {
-        return new Promise((resolve, reject) => {
-            return $.ajax({
-                url: _path + '/api/Spel/JoinGame',
-                method: 'PUT',
-                data: JSON.stringify({
-                    playerToken: playerToken
-                }),
+        let p = new Promise((resolve, reject) => {
+            return $.ajax(_path + '/api/Spel/JoinGame/'+playerToken,
+                {
+                method: 'GET',
                 success: (data) => {
                     resolve(data);
                 },
@@ -76,6 +73,7 @@ let ResponseModule = (($) => {
                 }
             });
         });
+        return p;
     }
 
     listen = (playerToken, callback) => {
