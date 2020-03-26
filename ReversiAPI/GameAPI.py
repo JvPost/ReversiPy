@@ -20,9 +20,9 @@ redisStreamServer = redis.StrictRedis(db=1)
 
 games = {}
 
-### ####################################### ###
-###             Done                        ###
-### ####################################### ###
+### ################################################### ###
+###                      Done                           ###
+### ################################################### ###
 @app.route('/api/Spel/GetPlayerToken', methods = ['GET'])
 def getPlayerToken():
     response = Response(mimetype="application/json")
@@ -115,10 +115,9 @@ def subscribe(playerToken):
     else:
         return 'error'
 
-### ####################################### ###
-###             to-do                       ###
-### ####################################### ###
-
+### ################################################### ###
+###                      To-Do                          ###
+### ################################################### ###
 @app.route('/api/Spel/<token>', methods = ['GET', 'POST'])
 def getGameInfo(token):
     response = Response()
@@ -152,12 +151,9 @@ def giveUp():
         response.status_code = 400
     return response
 
-
-
-### ####################################### ###
-###             Helpers                     ###
-### ####################################### ###
-
+### ################################################### ###
+###                      Helpers                        ###
+### ################################################### ###
 def EventStream(gameToken):
     pubsub = redisStreamServer.pubsub()
     pubsub.subscribe(gameToken) 

@@ -1,22 +1,32 @@
+@import 'splashscreen';
+
+%field{
+    width: 12.5%;
+    height: 12.5%;
+    border: 2px solid white;
+    background-color: #00bb00;
+    float: left;
+    position: relative;
+}
+
+%board{
+    width: 432px;
+    height: 432px;
+    background-color: white;
+    float: left;
+}
+
 div{
     box-sizing: border-box;
 }
 
 #reversi-board{
-    width: 432px;
-    height: 432px;
-    background-color: white;
-    float: left;
-
+    @extend %board;
     .reversi-field{
-        width: 12.5%;
-        height: 12.5%;
-        border: 2px solid white;
-        background-color: #00bb00;
-        float: left;
-        position: relative;
+        @extend %field;
         &:hover{
             border-color: black;
+            cursor: pointer;
         }
         .fiche{
             width: 90%;
@@ -53,7 +63,6 @@ div{
     height: 432px;
     .row-info-cell{
         height: 12.5%;
-
         span{
             position: relative;
             top: 50%;

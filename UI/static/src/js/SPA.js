@@ -9,31 +9,31 @@ const SPA = (($) => {
         let tokenPromise = SPA.ResponseModule.getPlayerToken;
         let gamePromise = SPA.ResponseModule.joinGame;
 
-        tokenPromise().then((tokenData) => {
-            _token = tokenData['playerToken'];
-            gamePromise(tokenData['playerToken']).then((gameData) => {
-                let gameColumns = gameData['gameColumns'];
-                let gameGrid = gameData['gameGrid'];
-                let gameToken = gameData['gameToken'];
-                $('#Title').append(gameData['playerColor'] == -1 ? ' (b)' : ' (w)');
+        tokenPromise()
+            .then((data) => {
+                _token = data['playerToken'];
+                return _token;
+            })
+            .then((token) => {
+                return gamePromise(token)
+            })
+            .then((data) => {
+                const columns = data['gameColumns'];
+                const grid = data['gameGrid'];
+                const gameToken = data['gameToken'];
+                $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
                 _$container = $('<div id="reversi-board-container">');
                 _$spa.append(_$container);
-                SPA.GameModule.init(_$container, gameColumns, gameGrid);
-            }).then(() => {
-                // move event handlers
+                SPA.GameModule.init(_$container, columns, grid);
                 const fields = $(_$container).find('.reversi-field');
                 $(fields).on('click', (ev) => {
-                    let data = $(ev.target).data();
-                    makeMove(data['col'], data['row']);
-                });
-            })
-            .then(() => {
-                listening();
-            })
-            .then(() => {
+                    let coordinates = $(ev.target).data();
+                    makeMove(coordinates['col'], coordinates['row']);
+                })
+                subscribeToGameApi();
                 $("#splash-container").css("display", "none");
-            });
-        });
+            })
+            .catch((err) => console.error(new Error(err)));
 
         // game info button
         let btn = $('<input type="button" value="log data from test game" >');
@@ -73,13 +73,12 @@ const SPA = (($) => {
     }
 
     //Listen for move
-    let listening = () => {
-        SPA.ResponseModule.listen(_token, SPA.GameModule.updateGrid);
+    let subscribeToGameApi = () => {
+        SPA.ResponseModule.subscribe(_token, SPA.GameModule.updateGrid);
     }
 
     return {
-        init : init,
-        listening: listening
+        init : init
     }
 })($);
 

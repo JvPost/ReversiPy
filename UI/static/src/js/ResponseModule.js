@@ -1,7 +1,7 @@
 SPA.ResponseModule = (($) => {
     "use strict"
 
-    let move, getGameInfo, getPlayerToken, joinGame, listen;
+    let move, getGameInfo, getPlayerToken, joinGame, subscribe;
     let _path = "http://localhost:5001";
     
 
@@ -22,7 +22,6 @@ SPA.ResponseModule = (($) => {
                     resolve(data);
                 },
                 failed: (data) => {
-                    console.log('failed')
                     reject('failed');
                 }
             });
@@ -53,7 +52,7 @@ SPA.ResponseModule = (($) => {
                     success: (data) => {
                         resolve(data);
                     },
-                    failed: (data) => {
+                    failed: (err) => {
                         reject('failed'); // TODO: add search for game?
                     }
                 });
@@ -61,22 +60,21 @@ SPA.ResponseModule = (($) => {
     }
 
     joinGame = (playerToken) => {
-        let p = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             return $.ajax(_path + '/api/Spel/JoinGame/'+playerToken,
                 {
                 method: 'GET',
                 success: (data) => {
                     resolve(data);
                 },
-                failed: () => {
+                failed: (err) => {
                     reject('failed');
                 }
             });
         });
-        return p;
     }
 
-    listen = (playerToken, callback) => {
+    subscribe = (playerToken, callback) => {
         var source = new EventSource(_path + '/api/Spel/Event/' + playerToken);
         source.onmessage = (event) => {
             if (event.data != "1"){
@@ -92,6 +90,6 @@ SPA.ResponseModule = (($) => {
         getGameInfo: getGameInfo,
         getPlayerToken : getPlayerToken,
         joinGame: joinGame,
-        listen: listen
+        subscribe: subscribe
     };
 })($);
