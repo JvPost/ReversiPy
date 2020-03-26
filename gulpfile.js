@@ -10,7 +10,6 @@ const htmlreplace = require('gulp-html-replace');
 const {series, parallel} = require('gulp');
 
 
-const reload = browserSync.reload;   
 const src = 'UI/static/src';
 const dist = 'UI/static/dist';
 
@@ -55,10 +54,10 @@ gulp.task('build-css', (done) => {
 });
 
 gulp.task('build-html', (done) => {
-    // index
+    // index placeholder
     gulp.src('UI/templates/src/index.html')
         .pipe(gulp.dest('UI/templates/dist/'));
-    //game TODO
+    // game placeholder
     gulp.src('UI/templates/src/reversi.html')
         .pipe(gulp.dest('UI/templates/dist/')); 
     done();

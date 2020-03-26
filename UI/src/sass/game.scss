@@ -1,0 +1,72 @@
+@import 'splashscreen';
+
+%field{
+    width: 12.5%;
+    height: 12.5%;
+    border: 2px solid white;
+    background-color: #00bb00;
+    float: left;
+    position: relative;
+}
+
+%board{
+    width: 432px;
+    height: 432px;
+    background-color: white;
+    float: left;
+}
+
+div{
+    box-sizing: border-box;
+}
+
+#reversi-board{
+    @extend %board;
+    .reversi-field{
+        @extend %field;
+        &:hover{
+            border-color: black;
+            cursor: pointer;
+        }
+        .fiche{
+            width: 90%;
+            height: 90%;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px solid black;
+        }
+        &[data-played="-1"] .fiche{
+            background-color:black;
+        }
+        &[data-played="1"] .fiche{
+            background-color: white;
+        }
+    }
+}
+
+#col-info{
+    width: 432px;
+    height: 20px;
+    .col-info-cell{
+        text-align: center;
+        height: 100%;
+        width: 12.5%;
+        float: left;
+    }
+}
+
+#row-info{
+    float: left;
+    height: 432px;
+    .row-info-cell{
+        height: 12.5%;
+        span{
+            position: relative;
+            top: 50%;
+        }
+    }
+}
+

@@ -7,6 +7,16 @@
         [X] - html
     [X] - Gulp (& flask) browsersync.
     [ ] - API en Game modules uit elkaar trekken.
+    [?] - Gulpify (remove jinja functionalities)
+        [x] - render_template veranderen naar send_file.
+        [] - Jinja2 handlebars weghalen.
+        [] - Static en Templates weghalen.
+        [] - 1 dist en 1 src folder.
+        [] - Gulp taken aanpassen.
+            [] - File paths aanpassen.
+            [] - Alles concatteren (css & js).
+            [] - Verplaatsen naar dist op .on('change', () => {});
+        [] - Maak van spel een popup.
 
 
 [] Speler
@@ -37,4 +47,4 @@
             [ ] - Visualiseren (licht groen welke velden gespeeld kunnen worden)
             [ ] - Uitrekenen of een move mag, voordat ik hem stuur.
                 [ ] - Als het een iligale move is, veld (2x) rood laten blinken.
-    [ ] 
+    [?] - Handlebars mogelijkheden toevoegen 
