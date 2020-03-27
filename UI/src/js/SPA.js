@@ -18,28 +18,29 @@ const SPA = (($) => {
         tokenPromise()
             .then((data) => {
                 _token = data['playerToken'];
+                console.log(_token);
                 return _token;
             })
-            .then((token) => {
-                return gamePromise(token)
-            })
-            .then((data) => {
-                const columns = data['gameColumns'];
-                const grid = data['gameGrid'];
-                const gameToken = data['gameToken'];
-                // $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
-                _$container = $('<div id="reversi-board-container">');
-                _$spa.append(_$container);
-                console.log(_$container);
-                // SPA.GameModule.init(_$container, columns, grid);
-                // const fields = $(_$container).find('.reversi-field');
-                // $(fields).on('click', (ev) => {
-                //     let coordinates = $(ev.target).data();
-                //     makeMove(coordinates['col'], coordinates['row']);
-                // })
-                // subscribeToGameApi();
-                // $("#splash-container").css("display", "none");
-            })
+            // .then((token) => {
+            //     return gamePromise(token)
+            // })
+            // .then((data) => {
+            //     const columns = data['gameColumns'];
+            //     const grid = data['gameGrid'];
+            //     const gameToken = data['gameToken'];
+            //     // $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
+            //     _$container = $('<div id="reversi-board-container"></div>');
+            //     _$spa.append(_$container);
+            //     console.log(_$container);
+            //     // SPA.GameModule.init(_$container, columns, grid);
+            //     // const fields = $(_$container).find('.reversi-field');
+            //     // $(fields).on('click', (ev) => {
+            //     //     let coordinates = $(ev.target).data();
+            //     //     makeMove(coordinates['col'], coordinates['row']);
+            //     // })
+            //     // subscribeToGameApi();
+            //     // $("#splash-container").css("display", "none");
+            // })
             .catch((err) => console.error(new Error(err)));
     }
 

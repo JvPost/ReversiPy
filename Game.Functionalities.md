@@ -1,4 +1,4 @@
-[] DevOps
+|> DevOps
     [X] - Gulp Folder structuur uitzoeken. (Dist folder is voor productie)
     [X] - Gulp auto prefixer. (last 2 versions)
     [X] - Gulp build functionaliteit.
@@ -7,8 +7,8 @@
         [X] - html
     [X] - Gulp (& flask) browsersync.
     [ ] - API en Game modules uit elkaar trekken.
-    [?] - Gulpify (remove jinja functionalities)
-        [x] - render_template veranderen naar send_file.
+    [X] - Gulpify (remove jinja functionalities)
+        [X] - render_template veranderen naar send_file.
         [X] - Jinja2 handlebars weghalen.
         [X] - Static en Templates weghalen.
         [X] - 1 dist en 1 src folder.
@@ -16,8 +16,10 @@
             [X] - File paths aanpassen.
             [X] - Alles concatteren (css & js).
             [X] - Verplaatsen naar dist op .on('change', () => {});
-            
-[] Speler
+    [] - Freeze script voordat ik push.
+    
+
+|> Speler
     [ ] - Als speler wil ik dat ik automatisch een spel join
         [ ] - Splashscreen wordt laten zien tijdens het wachten op een andere speler.
         [ ] - Mogelijkheid om het tegen een (getrainde) AI op te nemen.
@@ -36,7 +38,7 @@
         [ ] - Speler gaat weer automatisch in een queue.
         
 
-[ ] Spel -
+|> Spel -
     [X] - Regels om een zet te maken.
     [ ] - Elke ronde calculeren welke moves mogelijk zijn.
     [ ] - Elke ronde calculeren of de speler die aan de beurt is verloren heeft.

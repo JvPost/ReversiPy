@@ -1,4 +1,4 @@
-[ ] - AI
+|> - AI
     Go's 3 componenten:
         1. Policy network
             1.1 Getraind op games van hoog niveau
