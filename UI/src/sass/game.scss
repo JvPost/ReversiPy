@@ -13,11 +13,16 @@
     width: 432px;
     height: 432px;
     background-color: white;
-    float: left;
 }
 
 div{
     box-sizing: border-box;
+}
+
+#reversi-board-container{
+    position: absolute;
+    margin: auto;
+    border: 2px solid black;
 }
 
 #reversi-board{

@@ -6,6 +6,12 @@ const SPA = (($) => {
 
     init = (spa) => {
         _$spa = $(spa); 
+        $("#game-toggle").on('click', () => {
+            openReversiWindow();
+        });
+    }
+
+    let openReversiWindow = () => {
         let tokenPromise = SPA.ResponseModule.getPlayerToken;
         let gamePromise = SPA.ResponseModule.joinGame;
 
@@ -21,32 +27,20 @@ const SPA = (($) => {
                 const columns = data['gameColumns'];
                 const grid = data['gameGrid'];
                 const gameToken = data['gameToken'];
-                $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
+                // $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
                 _$container = $('<div id="reversi-board-container">');
                 _$spa.append(_$container);
-                SPA.GameModule.init(_$container, columns, grid);
-                const fields = $(_$container).find('.reversi-field');
-                $(fields).on('click', (ev) => {
-                    let coordinates = $(ev.target).data();
-                    makeMove(coordinates['col'], coordinates['row']);
-                })
-                subscribeToGameApi();
-                $("#splash-container").css("display", "none");
+                console.log(_$container);
+                // SPA.GameModule.init(_$container, columns, grid);
+                // const fields = $(_$container).find('.reversi-field');
+                // $(fields).on('click', (ev) => {
+                //     let coordinates = $(ev.target).data();
+                //     makeMove(coordinates['col'], coordinates['row']);
+                // })
+                // subscribeToGameApi();
+                // $("#splash-container").css("display", "none");
             })
             .catch((err) => console.error(new Error(err)));
-
-        // game info button
-        let btn = $('<input type="button" value="log data from test game" >');
-        $(btn).on('click', function(){
-            getGameInfo(0);
-        });
-
-        let surrenderBtn = $('<input type="button" value="Surrender>"');
-        $(surrenderBtn).on('click', () => {
-
-        });
-
-        _$spa.append(btn);
     }
 
     let makeMove = (col, row) => {

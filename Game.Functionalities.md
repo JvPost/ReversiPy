@@ -9,16 +9,14 @@
     [ ] - API en Game modules uit elkaar trekken.
     [?] - Gulpify (remove jinja functionalities)
         [x] - render_template veranderen naar send_file.
-        [] - Jinja2 handlebars weghalen.
-        [] - Static en Templates weghalen.
-        [] - 1 dist en 1 src folder.
-        [] - Gulp taken aanpassen.
-            [] - File paths aanpassen.
-            [] - Alles concatteren (css & js).
-            [] - Verplaatsen naar dist op .on('change', () => {});
-        [] - Maak van spel een popup.
-
-
+        [X] - Jinja2 handlebars weghalen.
+        [X] - Static en Templates weghalen.
+        [X] - 1 dist en 1 src folder.
+        [X] - Gulp taken aanpassen.
+            [X] - File paths aanpassen.
+            [X] - Alles concatteren (css & js).
+            [X] - Verplaatsen naar dist op .on('change', () => {});
+            
 [] Speler
     [ ] - Als speler wil ik dat ik automatisch een spel join
         [ ] - Splashscreen wordt laten zien tijdens het wachten op een andere speler.
