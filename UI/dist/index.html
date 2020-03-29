@@ -11,19 +11,24 @@
 <body>
 
     <script src="/vendors/jquery-3.4.1.min.js"></script>
+    <script src="/vendors/handlebars-min.js"></script>
 
     <h2 class="header">INDEX</h2>
     <div id="spa">
 
     </div>
-    <button class="game-toggle">Reversi</button>
+    
 
     <script src="/app-min.js"></script>
+    <script src="/Templates.js"></script>
 
     <script>
         $(function(){
             SPA.init($("#spa"));
         });
+        $('body').append(Handlebars.spa.reversi_open({
+            btnvalue: 'Reversi', btntext: 'Reversi' 
+        }));
     </script>
 </body>
 </html>

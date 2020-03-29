@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const minify = require('gulp-minify');
+const uglify = require('gulp-uglify-es').default;
 const order = require('gulp-order');
 const concat = require('gulp-concat');
 const cleanCss = require('gulp-clean-css');
@@ -19,12 +20,12 @@ const dist = 'UI/dist';
 
 'use strict'
 
-gulp.task('watch-templates', (done) => {
-    return src(src+"/templates/**/*.hbs")
+gulp.task('templates', (done) => {
+    return gulp.src(src+"/templates/**/*.hbs")
         .pipe(handlebars())
-        .pipe(wrap('Handlebars.template(<%= contents =%>)'))
+        .pipe(wrap('Handlebars.template(<%= contents %>)'))
         .pipe(declare({
-            namespace: 'Handlebars.spa',
+            namespace: 'Handlebars.spa', // used in html files
             noRedeclare: true, // Avoid duplicat declarations
         }))
         .pipe(concat('templates.js'))
@@ -46,21 +47,23 @@ gulp.task('watch',() => {
     });
 
     gulp.watch(src+"/sass/**/*.scss", series('sass'));
-    gulp.watch(src+"/templates/**/*.hbs", series('watch-templates'));
-
-    // TODO: add templates
+    gulp.watch(src+"/templates/**/*.hbs", series('templates'));
 
     gulp.watch(src+"/css/**/*.css").on('change', browserSync.reload);
     gulp.watch(src+"/js/**/*.js").on('change', browserSync.reload);
     gulp.watch(src+'/**/*.html').on('change', browserSync.reload);
+    gulp.watch(src+"/templates/**/*.hbs").on('change', browserSync.reload);
 });
 
 gulp.task('build-js', (done) => {
-    gulp.src(src+"/js/*.js")
+    gulp.src([
+        src+"/js/*.js",
+        '!'+src+'/js/templates.js'
+        ])
         .pipe(order([
             'SPA.js',
             '*.js'
-        ], ))
+        ]))
         .pipe(concat("/app.js"))
         .pipe(minify())
         .pipe(gulp.dest(dist));
@@ -76,9 +79,17 @@ gulp.task('build-css', (done) => {
 
 gulp.task('build-html', (done) => {
     gulp.src(src+'/*.html')
-        .pipe(useref())
+        .pipe(useref({
+            noAssets:true
+        }))
         .pipe(gulp.dest(dist))    
     done();
 });
 
-gulp.task('build', series(['build-js', 'build-css', 'build-html'])); // TODO add templates
+gulp.task('build-templates', (done) => {
+    gulp.src(src+'/js/templates.js')
+        .pipe(gulp.dest(dist));
+    done();
+});
+
+gulp.task('build', series(['build-js', 'build-css', 'build-html', 'build-templates']));

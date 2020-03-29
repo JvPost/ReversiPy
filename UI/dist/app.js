@@ -6,17 +6,20 @@ const SPA = (($) => {
 
     init = (spa) => {
         _$spa = $(spa); 
-        $(".game-toggle").on('click', () => {
+        $("#game-toggle-open").on('click', () => {
             openReversiWindow();
         });
     }
 
     let openReversiWindow = () => {
         if (_$container == undefined){
+            let tokenPromise = SPA.ResponseModule.getPlayerToken;
+            let gamePromise = SPA.ResponseModule.joinGame;
+    
             _$container = reversiBoardContainer();
             _$container.append(splashScreen());
             _$spa.append(_$container);
-
+    
             tokenPromise()
                 .then((data) => {
                     _token = data['playerToken'];
@@ -29,7 +32,7 @@ const SPA = (($) => {
                     const columns = data['gameColumns'];
                     const grid = data['gameGrid'];
                     const gameToken = data['gameToken'];
-                    // $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
+                    _$container.find('.section-header').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
                     SPA.GameModule.init(_$container, columns, grid);
                     const fields = $(_$container).find('.reversi-field');
                     $(fields).on('click', (ev) => {
@@ -40,15 +43,17 @@ const SPA = (($) => {
                     $("#splash-container").css("display", "none");
                 })
                 .catch((err) => console.error(new Error(err)));
-        } else if (_$container.css('display') == 'inline') {
-            _$container.css('display', 'none');
+                
+            $("#game-toggle-close").on('click', closeReversiWindow);
         } else {
-            _$container.css('display', 'inline');
+            _$container.css('display', 'inline-block');
         }
+    }
 
-        let tokenPromise = SPA.ResponseModule.getPlayerToken;
-        let gamePromise = SPA.ResponseModule.joinGame;
-
+    let closeReversiWindow = () => {
+        if (_$container != undefined){
+            _$container.css('display', 'none');
+        }
     }
 
     let makeMove = (col, row) => {
@@ -104,8 +109,9 @@ const SPA = (($) => {
         return $(
             `
                 <div id="reversi-board-container">
-                    <a href="#" class="close game-toggle"></a>
+                    <span class="close" id="game-toggle-close"></span>
                     <h3 class="section-header"> Reversi </h3>
+                    
                 </div>
             `);
     }
@@ -186,8 +192,6 @@ SPA.GameModule = (($) => {
     let fiche = () => {
         return $('<div class="fiche"></div>');
     }
-
-    
     
     return {
         init: init,

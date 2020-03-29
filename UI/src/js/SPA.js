@@ -9,7 +9,6 @@ const SPA = (($) => {
         $("#game-toggle-open").on('click', () => {
             openReversiWindow();
         });
-        
     }
 
     let openReversiWindow = () => {

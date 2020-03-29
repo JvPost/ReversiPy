@@ -1,4 +1,4 @@
 |> - Game
-    [ ] - Pop-upify
-        [ ] - Initialize SPA on Entering
-        [ ] - Initialize Game module on toggle game click
+    [X] - Pop-upify
+        [X] - Initialize SPA on Entering
+        [X] - Initialize Game module on toggle game click

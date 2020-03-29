@@ -17,12 +17,12 @@
             [X] - Alles concatteren (css & js).
             [X] - Verplaatsen naar dist op .on('change', () => {});
     [] - Freeze script voordat ik push.
-    
 
 |> Speler
-    [ ] - Als speler wil ik dat ik automatisch een spel join
-        [ ] - Splashscreen wordt laten zien tijdens het wachten op een andere speler.
-        [ ] - Mogelijkheid om het tegen een (getrainde) AI op te nemen.
+    [ ] - Loading (searching)
+        [ ] - 'Searching...' text toevoegen.
+        [ ] - Cancel knop toevoegen.
+        [ ] - Tegen AI opnemen toevoegen.
     [X] - Als speler wil ik een spel kunnen spelen.
         [X] - Bij het openen van de pagina wordt een bord laten zien (Fiches worden bepaald door array, van ResponseModule).
             [X] - Backend: Bepaal of speler al in spel zit.

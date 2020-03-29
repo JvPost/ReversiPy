@@ -24,18 +24,24 @@
     <div id="spa">
 
     </div>
-    <button id="game-toggle-open">Reversi</button>
+    
 
     <!-- build:js /app-min.js -->
     <script type="text/javascript" src="/js/SPA.js"></script>
     <script type="text/javascript" src="/js/GameModule.js"></script>
     <script type="text/javascript" src="/js/ResponseModule.js"></script>
     <!-- endbuild -->
+    <!-- build:js /Templates.js -->
+    <script type="text/javascript" src="/js/templates.js"></script>
+    <!-- endbuild -->
 
     <script>
         $(function(){
             SPA.init($("#spa"));
         });
+        $('body').append(Handlebars.spa.reversi_open({
+            btnvalue: 'Reversi', btntext: 'Reversi' 
+        }));
     </script>
 </body>
 </html>
