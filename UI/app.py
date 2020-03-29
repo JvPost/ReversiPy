@@ -7,7 +7,10 @@ app.config['SECRET_KEY'] = 'GeheimL0l!'
 app.config['ENV'] = 'development'
 app.config.from_object(__name__)
 
-root = os.path.dirname(os.path.realpath(__file__)) + "\\dist"
+if (app.config['ENV'] == 'development'):
+    root = os.path.dirname(os.path.realpath(__file__)) + "\\src"
+else:
+    root = os.path.dirname(os.path.realpath(__file__)) + "\\dist"
 
 @app.route('/<path:path>', methods=["GET"])
 def static_proxy(path):

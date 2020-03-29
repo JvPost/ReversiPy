@@ -15,6 +15,7 @@ SPA.GameModule = (($) => {
             _$grid.push([])
         }
 
+
         _$rowInfo = $('<div id="row-info">');
         _$colInfo = $('<div id="col-info">');
         _$board = $('<div id="reversi-board">');

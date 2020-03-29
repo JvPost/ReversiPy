@@ -9,69 +9,74 @@
     position: relative;
 }
 
-%board{
-    width: 432px;
-    height: 432px;
-    background-color: white;
-}
-
 div{
     box-sizing: border-box;
 }
 
 #reversi-board-container{
     position: absolute;
-    margin: auto;
-    border: 2px solid black;
-}
-
-#reversi-board{
-    @extend %board;
-    .reversi-field{
-        @extend %field;
-        &:hover{
-            border-color: black;
-            cursor: pointer;
-        }
-        .fiche{
-            width: 90%;
-            height: 90%;
-            position: relative;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 2px solid black;
-        }
-        &[data-played="-1"] .fiche{
-            background-color:black;
-        }
-        &[data-played="1"] .fiche{
-            background-color: white;
-        }
-    }
-}
-
-#col-info{
-    width: 432px;
-    height: 20px;
-    .col-info-cell{
-        text-align: center;
-        height: 100%;
-        width: 12.5%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: auto;
+    background-color: white;
+    box-shadow: 0px 0px 31px 25px rgba(0,0,0,0.75);
+    min-height: 452px;
+    min-width: 452px;
+    display: inline-block;
+    #reversi-board{
+        position: relative;
         float: left;
+        width: 432px;
+        height: 432px;
+        .reversi-field{
+            @extend %field;
+            &:hover{
+                border-color: black;
+                cursor: pointer;
+            }
+            .fiche{
+                width: 90%;
+                height: 90%;
+                position: relative;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                border-radius: 50%;
+                border: 2px solid black;
+            }
+            &[data-played="-1"] .fiche{
+                background-color:black;
+            }
+            &[data-played="1"] .fiche{
+                background-color: white;
+            }
+        }
+        
     }
-}
-
-#row-info{
-    float: left;
-    height: 432px;
-    .row-info-cell{
-        height: 12.5%;
-        span{
-            position: relative;
-            top: 50%;
+    #col-info{
+        width: 432px;
+        height: 20px;
+        .col-info-cell{
+            text-align: center;
+            height: 100%;
+            width: 12.5%;
+            float: left;
+        }
+    }
+    
+    #row-info{
+        float: left;
+        height: 432px;
+        .row-info-cell{
+            height: 12.5%;
+            span{
+                position: relative;
+                top: 50%;
+            }
         }
     }
 }
+
 

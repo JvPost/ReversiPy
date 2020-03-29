@@ -6,42 +6,49 @@ const SPA = (($) => {
 
     init = (spa) => {
         _$spa = $(spa); 
-        $("#game-toggle").on('click', () => {
+        $(".game-toggle").on('click', () => {
             openReversiWindow();
         });
     }
 
     let openReversiWindow = () => {
+        if (_$container == undefined){
+            _$container = reversiBoardContainer();
+            _$container.append(splashScreen());
+            _$spa.append(_$container);
+
+            tokenPromise()
+                .then((data) => {
+                    _token = data['playerToken'];
+                    return _token;
+                })
+                .then((token) => {
+                    return gamePromise(token)
+                })
+                .then((data) => {
+                    const columns = data['gameColumns'];
+                    const grid = data['gameGrid'];
+                    const gameToken = data['gameToken'];
+                    // $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
+                    SPA.GameModule.init(_$container, columns, grid);
+                    const fields = $(_$container).find('.reversi-field');
+                    $(fields).on('click', (ev) => {
+                        let coordinates = $(ev.target).data();
+                        makeMove(coordinates['col'], coordinates['row']);
+                    })
+                    subscribeToGameApi();
+                    $("#splash-container").css("display", "none");
+                })
+                .catch((err) => console.error(new Error(err)));
+        } else if (_$container.css('display') == 'inline') {
+            _$container.css('display', 'none');
+        } else {
+            _$container.css('display', 'inline');
+        }
+
         let tokenPromise = SPA.ResponseModule.getPlayerToken;
         let gamePromise = SPA.ResponseModule.joinGame;
 
-        tokenPromise()
-            .then((data) => {
-                _token = data['playerToken'];
-                console.log(_token);
-                return _token;
-            })
-            // .then((token) => {
-            //     return gamePromise(token)
-            // })
-            // .then((data) => {
-            //     const columns = data['gameColumns'];
-            //     const grid = data['gameGrid'];
-            //     const gameToken = data['gameToken'];
-            //     // $('#Title').append(data['playerColor'] == -1 ? ' (b)' : ' (w)');
-            //     _$container = $('<div id="reversi-board-container"></div>');
-            //     _$spa.append(_$container);
-            //     console.log(_$container);
-            //     // SPA.GameModule.init(_$container, columns, grid);
-            //     // const fields = $(_$container).find('.reversi-field');
-            //     // $(fields).on('click', (ev) => {
-            //     //     let coordinates = $(ev.target).data();
-            //     //     makeMove(coordinates['col'], coordinates['row']);
-            //     // })
-            //     // subscribeToGameApi();
-            //     // $("#splash-container").css("display", "none");
-            // })
-            .catch((err) => console.error(new Error(err)));
     }
 
     let makeMove = (col, row) => {
@@ -72,6 +79,37 @@ const SPA = (($) => {
         SPA.ResponseModule.subscribe(_token, SPA.GameModule.updateGrid);
     }
 
+    let splashScreen = () => { // TODO: handlebars van maken
+        return $(
+            `
+                <div id="splash-container">
+                    <div class="ring-wrapper">
+                        <div class="outer ring">
+                        </div>
+                    </div>
+                    <div class="ring-wrapper">
+                        <div class="inner ring">
+                        </div>
+                    </div>
+                    <div class="ring-wrapper">
+                        <div class="middle ring">
+                        </div>
+                    </div>
+                </div>
+                `
+        );
+    }
+
+    let reversiBoardContainer = () => { // TODO: handlebars van maken
+        return $(
+            `
+                <div id="reversi-board-container">
+                    <a href="#" class="close game-toggle"></a>
+                    <h3 class="section-header"> Reversi </h3>
+                </div>
+            `);
+    }
+
     return {
         init : init
     }
@@ -94,6 +132,7 @@ SPA.GameModule = (($) => {
         for (let i = 0; i < _grid.length; i++) {
             _$grid.push([])
         }
+
 
         _$rowInfo = $('<div id="row-info">');
         _$colInfo = $('<div id="col-info">');
@@ -147,6 +186,8 @@ SPA.GameModule = (($) => {
     let fiche = () => {
         return $('<div class="fiche"></div>');
     }
+
+    
     
     return {
         init: init,

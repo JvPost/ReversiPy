@@ -5,18 +5,33 @@
 <title>Index</title>
 <meta charset = "UTF-8" />
 
-<link rel="stylesheet" href="/app.css">
+<!-- build:css /app.css -->
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/game.css">
+<!-- endbuild -->
 
 </head>
 <body>
-    <script type="text/javascript" src="/vendors/jquery-3.4.1.min.js"></script>   
+
+    <!-- build:js /vendors/jquery-3.4.1.min.js -->
+    <script type="text/javascript" src="/js/vendors/jquery-3.4.1.min.js"></script>   
+    <!-- endbuild -->
+    <!-- build:js /vendors/handlebars-min.js -->
+    <script type="text/javascript" src="/js/vendors/handlebars.js"></script>
+    <!-- endbuild -->
+
     <h2 class="header">INDEX</h2>
     <div id="spa">
 
     </div>
-    <button id="game-toggle">Reversi</button>
+    <button id="game-toggle-open">Reversi</button>
 
-    <script type="text/javascript" src="/app-min.js"></script>
+    <!-- build:js /app-min.js -->
+    <script type="text/javascript" src="/js/SPA.js"></script>
+    <script type="text/javascript" src="/js/GameModule.js"></script>
+    <script type="text/javascript" src="/js/ResponseModule.js"></script>
+    <!-- endbuild -->
+
     <script>
         $(function(){
             SPA.init($("#spa"));
