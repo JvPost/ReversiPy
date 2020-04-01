@@ -2,6 +2,7 @@ from Reversi import Game
 from Board import Field, Grid, FieldValue
 
 import pytest
+import re
 
 columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 

@@ -13,12 +13,6 @@ class Grid:
         self.set(5, 'd', FieldValue.BLACK)
         self.set(5, 'e', FieldValue.WHITE)
 
-        # # can be played by black
-        # self.get(6, 'e').canBePlayedBy = CanBePlayedBy.BLACK.value
-        # self.get(5, 'f').canBePlayedBy = CanBePlayedBy.BLACK.value
-        # self.get(4, 'c').canBePlayedBy = CanBePlayedBy.BLACK.value
-        # self.get(3, 'd').canBePlayedBy = CanBePlayedBy.BLACK.value
-
     def __str__(self):
         valueGrid = self.valueGrid
         intValueGrid = []
